@@ -1,4 +1,4 @@
-package com.proj.memeboard.login
+package com.proj.memeboard.ui.login
 
 import android.content.Intent
 import android.graphics.PorterDuff
@@ -12,7 +12,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
-import com.proj.memeboard.MainActivity
+import com.proj.memeboard.ui.MainActivity
 import com.proj.memeboard.R
 import com.proj.memeboard.model.LoginRequest
 import kotlinx.android.synthetic.main.activity_login.*
@@ -52,7 +52,7 @@ class LoginActivity: AppCompatActivity() {
         )
 
         loginButton.setOnClickListener {
-            if (!hasInputErrors()) return@setOnClickListener
+            if (hasInputErrors()) return@setOnClickListener
 
             showProgress()
             login()
@@ -62,6 +62,12 @@ class LoginActivity: AppCompatActivity() {
     private fun startMemeActivity() {
         startActivity(Intent(this, MainActivity::class.java))
         finish()
+    }
+
+    private fun hideProgress() {
+        loginButton.text = getString(R.string.sign_in)
+        loginButton.isClickable = true
+        progressBar.visibility = View.GONE
     }
 
     private fun showLoginError() {
@@ -106,11 +112,12 @@ class LoginActivity: AppCompatActivity() {
         }
     }
 
-    private fun login() {
-        val login = loginEditText.text.toString()
-        val pass = passEditText.text.toString()
+    private fun hasInputErrors(): Boolean {
+        val blankInputError = getString(R.string.blank_input_error)
+        loginLayout.error = if (loginEditText.text.isNullOrBlank()) blankInputError else null
+        passLayout.error = if (passEditText.text.isNullOrBlank()) blankInputError else null
 
-        viewModel.userInputData.value = LoginRequest(login, pass)
+        return loginLayout.error != null || passLayout.error != null
     }
 
     private fun showProgress() {
@@ -119,17 +126,10 @@ class LoginActivity: AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
     }
 
-    private fun hideProgress() {
-        loginButton.text = getString(R.string.sign_in)
-        loginButton.isClickable = true
-        progressBar.visibility = View.GONE
-    }
+    private fun login() {
+        val login = loginEditText.text.toString()
+        val pass = passEditText.text.toString()
 
-    private fun hasInputErrors(): Boolean {
-        val blankInputError = getString(R.string.blank_input_error)
-        loginLayout.error = if (loginEditText.text.isNullOrBlank()) blankInputError else null
-        passLayout.error = if (passEditText.text.isNullOrBlank()) blankInputError else null
-
-        return loginLayout.error == null && passLayout.error == null
+        viewModel.userInputData.value = LoginRequest(login, pass)
     }
 }

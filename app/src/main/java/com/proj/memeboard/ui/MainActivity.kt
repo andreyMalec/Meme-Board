@@ -1,7 +1,8 @@
-package com.proj.memeboard
+package com.proj.memeboard.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.proj.memeboard.R
 
 class MainActivity : AppCompatActivity() {
 

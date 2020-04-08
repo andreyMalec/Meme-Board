@@ -1,10 +1,11 @@
-package com.proj.memeboard
+package com.proj.memeboard.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import com.proj.memeboard.login.LoginActivity
+import com.proj.memeboard.R
+import com.proj.memeboard.ui.login.LoginActivity
 
 class SplashActivity: AppCompatActivity() {
     private val splashScreenDuration = 300L
