@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Meme board</string>
+
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
 </resources>
