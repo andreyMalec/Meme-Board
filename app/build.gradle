@@ -36,9 +36,13 @@ android {
         }
     }
 
+// To inline the bytecode built with JVM target 1.8 into
+// bytecode that is being built with JVM target 1.6. (e.g. navArgs)
+
 }
 
 dependencies {
+    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     kapt "androidx.room:room-compiler:2.2.5"
     kapt 'com.android.databinding:compiler:3.1.4'
     kapt "android.arch.lifecycle:common-java8:1.1.1"
@@ -52,6 +56,10 @@ dependencies {
     implementation "android.arch.lifecycle:runtime:1.1.1"
     implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'com.squareup.retrofit2:retrofit:2.8.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.2.1'
+    implementation 'androidx.navigation:navigation-fragment:2.2.1'
+    implementation 'androidx.navigation:navigation-ui:2.2.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

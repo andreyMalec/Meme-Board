@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
-    tools:context=".login.LoginActivity">
+    tools:context=".ui.login.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:boxBackgroundColor="@color/loginEditTextBg"
+            app:boxBackgroundColor="@color/colorLightBackground"
             app:errorIconDrawable="@android:color/transparent"
             app:errorTextColor="@color/colorError">
 
@@ -46,7 +46,7 @@
             android:id="@+id/passLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:boxBackgroundColor="@color/loginEditTextBg"
+            app:boxBackgroundColor="@color/colorLightBackground"
             app:endIconMode="password_toggle"
             app:errorIconDrawable="@android:color/transparent"
             app:errorTextColor="@color/colorError">

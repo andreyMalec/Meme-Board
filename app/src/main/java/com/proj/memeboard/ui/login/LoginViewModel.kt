@@ -1,4 +1,4 @@
-package com.proj.memeboard.login
+package com.proj.memeboard.ui.login
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

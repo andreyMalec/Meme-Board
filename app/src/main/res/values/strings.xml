@@ -7,4 +7,9 @@
     <string name="blank_input_error">This field cannot be empty</string>
     <string name="password_helper">The password must contain 8 characters</string>
     <string name="login_fail">At query time the error occurred, maybe you entered the wrong login password</string>
+
+    <string name="title_activity_main">Popular memes</string>
+    <string name="title_home">Home</string>
+    <string name="title_new_meme">New meme</string>
+    <string name="title_user">Profile</string>
 </resources>

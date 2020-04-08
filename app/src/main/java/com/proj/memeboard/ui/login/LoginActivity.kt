@@ -1,4 +1,4 @@
-package com.proj.memeboard.login
+package com.proj.memeboard.ui.login
 
 import android.content.Intent
 import android.graphics.PorterDuff
@@ -12,7 +12,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
-import com.proj.memeboard.MainActivity
+import com.proj.memeboard.ui.main.MainActivity
 import com.proj.memeboard.R
 import com.proj.memeboard.model.LoginRequest
 import kotlinx.android.synthetic.main.activity_login.*
