@@ -1,9 +1,9 @@
 package com.proj.memeboard
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
 import com.proj.memeboard.login.LoginActivity
 
 class SplashActivity: AppCompatActivity() {

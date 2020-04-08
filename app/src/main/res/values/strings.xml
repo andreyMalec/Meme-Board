@@ -6,4 +6,5 @@
     <string name="sign_in">Sign in</string>
     <string name="blank_input_error">This field cannot be empty</string>
     <string name="password_helper">The password must contain 8 characters</string>
+    <string name="login_fail">At query time the error occurred, maybe you entered the wrong login password</string>
 </resources>

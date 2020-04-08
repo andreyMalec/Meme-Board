@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
@@ -26,7 +27,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:boxBackgroundColor="@color/loginEditTextBg">
+            app:boxBackgroundColor="@color/loginEditTextBg"
+            app:errorIconDrawable="@android:color/transparent"
+            app:errorTextColor="@color/colorError">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/loginEditText"
@@ -44,7 +47,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:boxBackgroundColor="@color/loginEditTextBg"
-            app:endIconMode="password_toggle">
+            app:endIconMode="password_toggle"
+            app:errorIconDrawable="@android:color/transparent"
+            app:errorTextColor="@color/colorError">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passEditText"
@@ -62,7 +67,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1">
-
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
