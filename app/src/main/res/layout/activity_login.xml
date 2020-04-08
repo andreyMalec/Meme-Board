@@ -34,7 +34,9 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/login"
                 android:imeOptions="actionNext"
-                android:singleLine="true" />
+                android:inputType="phone"
+                android:lines="1"
+                android:maxLength="16" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -51,7 +53,8 @@
                 android:hint="@string/password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
-                android:singleLine="true" />
+                android:lines="1"
+                android:maxLength="8" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -60,17 +63,47 @@
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
-        <Button
-            android:id="@+id/loginButton"
-            style="@style/AppTheme.LoginButton"
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_margin="16dp"
-            android:text="@string/sign_in"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Button
+                    android:id="@+id/loginButton"
+                    style="@style/AppTheme.LoginButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="@string/sign_in"
+                    android:textColor="@color/colorPrimary" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </ScrollView>
+
 </LinearLayout>
