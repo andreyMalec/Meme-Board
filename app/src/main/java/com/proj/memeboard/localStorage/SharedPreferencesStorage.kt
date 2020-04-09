@@ -14,12 +14,20 @@ class SharedPreferencesStorage(context: Context): LocalStorage {
         return preferences.getInt(pref.key, 0)
     }
 
+    override fun getLong(pref: UserPreferences): Long  {
+        return preferences.getLong(pref.key, 0)
+    }
+
     override operator fun set(pref: UserPreferences, value: String) {
         preferences.edit().putString(pref.key, value).apply()
     }
 
     override operator fun set(pref: UserPreferences, value: Int) {
         preferences.edit().putInt(pref.key, value).apply()
+    }
+
+    override operator fun set(pref: UserPreferences, value: Long) {
+        preferences.edit().putLong(pref.key, value).apply()
     }
 
     override fun contains(pref: UserPreferences): Boolean {

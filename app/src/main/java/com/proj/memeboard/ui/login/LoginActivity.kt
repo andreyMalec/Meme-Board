@@ -12,7 +12,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
-import com.proj.memeboard.ui.main.MainActivity
+import com.proj.memeboard.ui.MainActivity
 import com.proj.memeboard.R
 import com.proj.memeboard.model.LoginRequest
 import kotlinx.android.synthetic.main.activity_login.*
@@ -130,6 +130,6 @@ class LoginActivity: AppCompatActivity() {
         loginLayout.error = if (loginEditText.text.isNullOrBlank()) blankInputError else null
         passLayout.error = if (passEditText.text.isNullOrBlank()) blankInputError else null
 
-        return loginLayout.error == null && passLayout.error == null
+        return (loginLayout.error == null && passLayout.error == null) || passEditText.text?.count() != 8
     }
 }

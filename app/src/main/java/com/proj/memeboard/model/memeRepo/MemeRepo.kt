@@ -1,6 +1,7 @@
 package com.proj.memeboard.model.memeRepo
 
 import androidx.lifecycle.MutableLiveData
+import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.domain.User
 import com.proj.memeboard.model.LoginRequest
 import com.proj.memeboard.model.RetrofitCallback
@@ -29,5 +30,16 @@ class MemeRepo {
         else Result.failure<User>(IllegalArgumentException("input data is null"))
 
         return userInfo
+    }
+
+    fun getMemes(): MutableLiveData<Result<List<Meme>>> {
+        val memes = MutableLiveData<Result<List<Meme>>>()
+
+        memeApi.getMemes().enqueue(RetrofitCallback<List<Meme>> (
+            { data -> memes.value = Result.success(data) },
+            { error -> memes.value = Result.failure(error) }
+        ))
+
+        return memes
     }
 }

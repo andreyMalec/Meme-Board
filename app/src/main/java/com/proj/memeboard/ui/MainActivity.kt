@@ -1,4 +1,4 @@
-package com.proj.memeboard.ui.main
+package com.proj.memeboard.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
