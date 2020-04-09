@@ -12,6 +12,12 @@
         <item name="android:paddingBottom">16dp</item>
     </style>
 
+    <style name="AppTheme.ActionButton" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:button">@null</item>
+        <item name="android:layout_margin">6dp</item>
+        <item name="rippleColor">@color/colorAccent</item>
+    </style>
+
     <style name="AppTheme.Launcher" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
