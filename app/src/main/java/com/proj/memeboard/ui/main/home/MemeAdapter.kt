@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.proj.memeboard.databinding.MemeLayoutBinding
 import com.proj.memeboard.localDb.MemeData
 
-class MemeAdapter internal constructor(private val vm: ShareMeme):
+class MemeAdapter internal constructor(private val vm: MemeAction):
     PagedListAdapter<MemeData, MemeAdapter.MemeItemViewHolder>(diffUtilCallback) {
     companion object {
         private val diffUtilCallback = object: DiffUtil.ItemCallback<MemeData>() {
@@ -47,13 +47,18 @@ class MemeAdapter internal constructor(private val vm: ShareMeme):
         holder.binding?.shareLayout?.setOnClickListener {
             vm.onMemeShareClick(meme)
         }
+        holder.binding?.image?.setOnClickListener {
+            vm.onMemeDetailClick(meme)
+        }
     }
 
     inner class MemeItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val binding: MemeLayoutBinding? = androidx.databinding.DataBindingUtil.bind(view)
     }
 
-    interface ShareMeme {
+    interface MemeAction {
         fun onMemeShareClick(meme: MemeData?)
+
+        fun onMemeDetailClick(meme: MemeData?)
     }
 }
