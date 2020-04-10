@@ -1,4 +1,4 @@
-package com.proj.memeboard.model
+package com.proj.memeboard.model.request
 
 data class LoginRequest(
     val login: String,

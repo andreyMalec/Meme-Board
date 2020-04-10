@@ -1,36 +1,52 @@
 package com.proj.memeboard.ui.login
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.proj.memeboard.domain.User
 import com.proj.memeboard.localStorage.LocalStorageProvider
 import com.proj.memeboard.localStorage.UserPreferences
-import com.proj.memeboard.model.LoginRequest
+import com.proj.memeboard.model.request.LoginRequest
 import com.proj.memeboard.model.memeRepo.MemeRepoProvider
+import com.proj.memeboard.localStorage.set
 
 class LoginViewModel(app: Application): AndroidViewModel(app) {
     private val repo = MemeRepoProvider.memeRepo
-    private val localStorage = LocalStorageProvider.create(app.applicationContext)
+    private val localStorage = LocalStorageProvider.create(app.applicationContext, UserPreferences.USER_PREFERENCES.key)
 
     val userInputData = MutableLiveData<LoginRequest>()
+    val userResult: LiveData<LoginRequest>
 
-    val user: LiveData<Result<User>> = Transformations.switchMap(userInputData) {
-        repo.login(userInputData.value)
+    val userAuthorized = MutableLiveData(isUserAuthorized())
+    val isLoading = MutableLiveData(false)
+    val loginError = MutableLiveData(false)
+
+    init {
+        userResult = Transformations.switchMap(userInputData) { value ->
+            isLoading.value = true
+            repo.login(value) { userResult ->
+                if (userResult.isSuccess) {
+                    loginError.value = false
+                    saveUserData(userResult.getOrNull())
+                    userAuthorized.value = true
+                } else
+                    loginError.value = true
+
+                isLoading.value = false
+            }
+            MutableLiveData<LoginRequest>()
+        }
     }
 
-    fun containsUserData(): Boolean {
-        return localStorage.contains(UserPreferences.TOKEN)
+    private fun isUserAuthorized(): Boolean {
+        return localStorage.contains(UserPreferences.TOKEN.key)
     }
 
-    fun saveUserData(user: User?) {
-        localStorage[UserPreferences.TOKEN] = user?.token ?: ""
-        localStorage[UserPreferences.ID] = user?.id ?: -1
-        localStorage[UserPreferences.USER_NAME] = user?.userName ?: ""
-        localStorage[UserPreferences.FIRST_NAME] = user?.firstName ?: ""
-        localStorage[UserPreferences.LAST_NAME] = user?.lastName ?: ""
-        localStorage[UserPreferences.DESC] = user?.userDescription ?: ""
+    private fun saveUserData(user: User?) {
+        localStorage[UserPreferences.TOKEN.key] = user?.token ?: ""
+        localStorage[UserPreferences.ID.key] = user?.id ?: -1
+        localStorage[UserPreferences.USER_NAME.key] = user?.userName ?: ""
+        localStorage[UserPreferences.FIRST_NAME.key] = user?.firstName ?: ""
+        localStorage[UserPreferences.LAST_NAME.key] = user?.lastName ?: ""
+        localStorage[UserPreferences.DESC.key] = user?.userDescription ?: ""
     }
 }

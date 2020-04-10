@@ -1,6 +1,6 @@
 package com.proj.memeboard.model.memeApi
 
-import com.proj.memeboard.domain.Meme
+import com.proj.memeboard.model.response.MemeResponse
 import com.proj.memeboard.model.response.LoginResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -12,5 +12,5 @@ interface MemeApi {
     fun login(@Query("login") login: String, @Query("password") password: String): Call<LoginResponse>
 
     @GET("memes")
-    fun getMemes(): Call<List<Meme>>
+    fun getMemes(): Call<List<MemeResponse>>
 }

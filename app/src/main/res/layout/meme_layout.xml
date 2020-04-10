@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-        <variable name="meme" type="com.proj.memeboard.domain.Meme"/>
+        <variable name="meme" type="com.proj.memeboard.localDb.MemeData"/>
         <import type="com.proj.memeboard.ui.main.BindingAdapter"/>
     </data>
 
-    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         app:cardCornerRadius="8dp">
 
         <LinearLayout
@@ -48,6 +50,7 @@
                 android:padding="10dp">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/favoriteLayout"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:clickable="true"
@@ -63,17 +66,19 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <CheckBox
+                        android:id="@+id/favoriteButton"
                         style="@style/AppTheme.ActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:scaleType="centerCrop"
-                        android:clickable="false"
+                        android:background="@drawable/favorite_button"
                         android:checked="@{meme.favorite}"
-                        android:background="@drawable/favorite_button" />
+                        android:clickable="false"
+                        android:scaleType="centerCrop" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/shareLayout"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:clickable="true"
@@ -89,6 +94,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
+                        android:id="@+id/shareButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
