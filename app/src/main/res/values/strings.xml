@@ -15,4 +15,5 @@
 
     <string name="memes_load_error_text">The feed failed to load.\nRefresh the screen or try again later</string>
     <string name="memes_load_error">At query time the error occurred</string>
+    <string name="share_meme">Send to</string>
 </resources>

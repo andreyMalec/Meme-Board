@@ -1,5 +1,6 @@
 package com.proj.memeboard.ui.main.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +12,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
+import com.proj.memeboard.localDb.MemeData
 import kotlinx.android.synthetic.main.fragment_meme.*
 
-class MemeFragment : Fragment() {
+class MemeFragment : Fragment(), MemeAdapter.ShareMeme {
     private lateinit var viewModel: MemeViewModel
-    private val adapter = MemeAdapter()
+    private val adapter = MemeAdapter(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_meme, container, false)
@@ -81,5 +83,19 @@ class MemeFragment : Fragment() {
         Snackbar.make(root, getString(R.string.memes_load_error), Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this.requireContext(), R.color.colorError))
             .show()
+    }
+
+    override fun onMemeShareClick(meme: MemeData?) {
+        if (meme == null) return
+
+        val share = Intent.createChooser(Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, meme.title + "\n" +
+                    meme.description.takeIf { it != null } + "\n" +
+                    meme.photoUrl)
+
+            type = "text/plain"
+        }, getString(R.string.share_meme))
+        startActivity(share)
     }
 }
