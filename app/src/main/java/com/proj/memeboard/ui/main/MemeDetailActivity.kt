@@ -67,7 +67,6 @@ class MemeDetailActivity: AppCompatActivity() {
         )
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.close)
         supportActionBar?.title = meme.title
     }
 

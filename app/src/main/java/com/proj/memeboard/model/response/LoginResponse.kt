@@ -1,7 +1,6 @@
 package com.proj.memeboard.model.response
 
 import com.proj.memeboard.domain.User
-import com.proj.memeboard.model.UserInfo
 
 data class LoginResponse(val accessToken: String, val userInfo: UserInfo?): BaseResponse<User> {
     override fun convert(): User {
@@ -14,4 +13,12 @@ data class LoginResponse(val accessToken: String, val userInfo: UserInfo?): Base
             userInfo?.userDescription ?: ""
         )
     }
+
+    inner class UserInfo(
+        val id: Long,
+        val userName: String,
+        val firstName: String,
+        val lastName: String,
+        val userDescription: String
+    )
 }

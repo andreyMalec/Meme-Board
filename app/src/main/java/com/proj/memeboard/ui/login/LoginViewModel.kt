@@ -44,9 +44,9 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
     private fun saveUserData(user: User?) {
         localStorage[UserPreferences.TOKEN.key] = user?.token ?: ""
         localStorage[UserPreferences.ID.key] = user?.id ?: -1
-        localStorage[UserPreferences.USER_NAME.key] = user?.userName ?: ""
-        localStorage[UserPreferences.FIRST_NAME.key] = user?.firstName ?: ""
-        localStorage[UserPreferences.LAST_NAME.key] = user?.lastName ?: ""
-        localStorage[UserPreferences.DESC.key] = user?.userDescription ?: ""
+        localStorage[UserPreferences.USER_NAME.key] = user?.userName ?: "userName"
+        localStorage[UserPreferences.FIRST_NAME.key] = user?.firstName ?: "firstName"
+        localStorage[UserPreferences.LAST_NAME.key] = user?.lastName ?: "lastName"
+        localStorage[UserPreferences.DESC.key] = user?.userDescription ?: "description"
     }
 }

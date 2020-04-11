@@ -7,12 +7,13 @@ import android.widget.CheckBox
 import androidx.cardview.widget.CardView
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.proj.memeboard.databinding.MemeLayoutBinding
 import com.proj.memeboard.localDb.MemeData
 
 class MemeAdapter internal constructor(private val vm: MemeAction):
-    PagedListAdapter<MemeData, MemeAdapter.MemeItemViewHolder>(diffUtilCallback) {
+    ListAdapter<MemeData, MemeAdapter.MemeItemViewHolder>(diffUtilCallback) {
     companion object {
         private val diffUtilCallback = object: DiffUtil.ItemCallback<MemeData>() {
             override fun areItemsTheSame(oldItem: MemeData, newItem: MemeData): Boolean {
