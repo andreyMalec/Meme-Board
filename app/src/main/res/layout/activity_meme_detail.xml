@@ -10,7 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.MemeDetailActivity">
+        tools:context=".ui.main.MemeDetailActivity"
+        tools:ignore="UnusedAttribute">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -45,7 +46,8 @@
                     android:layout_margin="16dp"
                     android:text="@{meme.title}"
                     android:textColor="@android:color/white"
-                    android:textSize="30sp" />
+                    android:textSize="30sp"
+                    android:transitionName="title" />
 
                 <ImageView
                     android:id="@+id/image"
@@ -53,7 +55,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitStart" />
+                    android:scaleType="fitStart"
+                    android:transitionName="image" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -90,6 +93,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        android:transitionName="favorite"
                         tools:showIn="@layout/meme_layout">
 
                         <CheckBox

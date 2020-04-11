@@ -11,7 +11,7 @@ object BindingAdapter {
     @BindingAdapter("imageUrl")
     @JvmStatic
     fun imageUrl(imageView: ImageView, urlToImage: String) {
-        Glide.with(imageView).load(urlToImage).placeholder(R.drawable.image_placeholder).into(imageView)
+        Glide.with(imageView).load(urlToImage).into(imageView)
     }
 
     @BindingAdapter("formatDate")

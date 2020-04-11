@@ -48,7 +48,7 @@ class MemeAdapter internal constructor(private val vm: MemeAction):
             vm.onMemeShareClick(meme)
         }
         holder.binding?.image?.setOnClickListener {
-            vm.onMemeDetailClick(meme)
+            vm.onMemeDetailClick(meme, it, holder.binding.title, holder.binding.favoriteLayout)
         }
     }
 
@@ -59,6 +59,6 @@ class MemeAdapter internal constructor(private val vm: MemeAction):
     interface MemeAction {
         fun onMemeShareClick(meme: MemeData?)
 
-        fun onMemeDetailClick(meme: MemeData?)
+        fun onMemeDetailClick(meme: MemeData?, imageView: View, titleView: View, favoriteView: View)
     }
 }

@@ -1,10 +1,10 @@
 package com.proj.memeboard.ui.main.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,6 +16,7 @@ import com.proj.memeboard.localDb.MemeData
 import com.proj.memeboard.ui.main.MemeDetailActivity
 import com.proj.memeboard.util.MemeSharer
 import kotlinx.android.synthetic.main.fragment_meme.*
+
 
 class MemeFragment : Fragment(), MemeAdapter.MemeAction {
     private lateinit var viewModel: MemeViewModel
@@ -92,8 +93,14 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction {
             MemeSharer(context!!).send(meme)
     }
 
-    override fun onMemeDetailClick(meme: MemeData?) {
-        if (meme != null)
-            startActivity(MemeDetailActivity.getExtraIntent(context!!, meme))
+    override fun onMemeDetailClick(meme: MemeData?, imageView: View, titleView: View, favoriteView: View) {
+        if (meme != null) {
+            val intent = MemeDetailActivity.getExtraIntent(context!!, meme)
+            val p1 = androidx.core.util.Pair(imageView, "image")
+            val p2 = androidx.core.util.Pair(titleView, "title")
+            val p3 = androidx.core.util.Pair(favoriteView, "favorite")
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!, p1, p2, p3)
+            startActivity(intent, options.toBundle())
+        }
     }
 }

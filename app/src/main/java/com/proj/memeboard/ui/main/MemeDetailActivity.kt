@@ -40,7 +40,7 @@ class MemeDetailActivity: AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> supportFinishAfterTransition()
             R.id.shareButton -> MemeSharer(this).send(meme)
         }
 
