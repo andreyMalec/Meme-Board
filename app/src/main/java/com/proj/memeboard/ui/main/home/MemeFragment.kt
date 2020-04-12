@@ -99,9 +99,10 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction {
         if (adapter.currentList.isEmpty())
             errorText.visibility = View.VISIBLE
 
-        Snackbar.make(root, getString(R.string.memes_load_error), Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(this.requireContext(), R.color.colorError))
-            .show()
+        val snackbar = Snackbar.make(root, getString(R.string.memes_load_error), Snackbar.LENGTH_LONG)
+        snackbar.anchorView = activity?.findViewById(R.id.nav_view)
+        snackbar.setBackgroundTint(ContextCompat.getColor(this.requireContext(), R.color.colorError))
+        snackbar.show()
     }
 
     private fun initToolBar() {
