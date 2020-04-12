@@ -5,5 +5,6 @@
     <color name="colorAccent">#1EF0D7</color>
     <color name="colorError">#FF575D</color>
 
-    <color name="loginEditTextBg">#2E2C49</color>
+    <color name="colorLightBackground">#2E2C49</color>
+    <color name="colorDarkBackground">#12102B</color>
 </resources>

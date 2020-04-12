@@ -1,11 +1,11 @@
 package com.proj.memeboard.model.memeRepo
 
-import androidx.lifecycle.MutableLiveData
 import com.proj.memeboard.domain.User
-import com.proj.memeboard.model.LoginRequest
 import com.proj.memeboard.model.RetrofitCallback
 import com.proj.memeboard.model.memeApi.MemeApi
+import com.proj.memeboard.model.request.LoginRequest
 import com.proj.memeboard.model.response.LoginResponse
+import com.proj.memeboard.model.response.MemeResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -17,17 +17,19 @@ class MemeRepo {
 
     private val memeApi = retrofit.create(MemeApi::class.java)
 
-    fun login(loginRequest: LoginRequest?): MutableLiveData<Result<User>> {
-        val userInfo = MutableLiveData<Result<User>>()
-
+    fun login(loginRequest: LoginRequest?, onDataReceived: (data: Result<User>) -> Unit) {
         if (loginRequest != null) {
             memeApi.login(loginRequest.login, loginRequest.password).enqueue(RetrofitCallback<LoginResponse>(
-                { data -> userInfo.value = Result.success(data.convert()) },
-                { error -> userInfo.value = Result.failure(error) }
+                { data -> onDataReceived(Result.success(data.convert())) },
+                { error -> onDataReceived(Result.failure(error)) }
             ))
-        }
-        else Result.failure<User>(IllegalArgumentException("input data is null"))
+        } else Result.failure<User>(IllegalArgumentException("input data is null"))
+    }
 
-        return userInfo
+    fun getMemes(onDataReceived: (data: Result<List<MemeResponse>>) -> Unit) {
+        memeApi.getMemes().enqueue(RetrofitCallback<List<MemeResponse>>(
+            { data -> onDataReceived(Result.success(data)) },
+            { error -> onDataReceived(Result.failure(error)) }
+        ))
     }
 }

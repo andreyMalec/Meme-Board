@@ -7,13 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.proj.memeboard.R
 import com.proj.memeboard.ui.login.LoginActivity
 
-class SplashActivity: AppCompatActivity() {
+class SplashActivity : AppCompatActivity() {
     private val splashScreenDuration = 300L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        startLoginActivity()
+    }
+
+    private fun startLoginActivity() {
         Handler().postDelayed({
             startActivity(Intent(this, LoginActivity::class.java))
             finish()

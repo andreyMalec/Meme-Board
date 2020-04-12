@@ -12,12 +12,12 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
-import com.proj.memeboard.ui.MainActivity
 import com.proj.memeboard.R
-import com.proj.memeboard.model.LoginRequest
+import com.proj.memeboard.model.request.LoginRequest
+import com.proj.memeboard.ui.main.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
-class LoginActivity: AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
     private lateinit var viewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,37 +26,49 @@ class LoginActivity: AppCompatActivity() {
 
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
-        if (viewModel.containsUserData()) {
-            startMemeActivity()
-            return
-        }
+        initListeners()
+        setProgressBarColor()
+    }
 
-        viewModel.user.observe(this, Observer { result ->
-            hideProgress()
+    private fun initListeners() {
+        initViewModelListeners()
+        setInputListeners()
+        setLoginButtonListener()
+    }
 
-            when {
-                result.isSuccess -> {
-                    viewModel.saveUserData(result.getOrNull())
+    private fun initViewModelListeners() {
+        viewModel.userAuthorized.observe(this, Observer { authorized ->
+            if (authorized)
+                startMemeActivity()
+        })
 
-                    startMemeActivity()
+        viewModel.isLoading.observe(this, Observer { loading ->
+            if (loading) showProgress()
+            else hideProgress()
+        })
+
+        viewModel.loadError.observe(this, Observer { error ->
+            if (error) showLoginError()
+        })
+
+        viewModel.loginInputError.observe(this, Observer { error ->
+            loginLayout.error =
+                if (error) getString(R.string.blank_input_error)
+                else null
+        })
+
+        viewModel.passInputError.observe(this, Observer { error ->
+            when (error) {
+                0 -> passLayout.error = getString(R.string.blank_input_error)
+                1 -> passLayout.helperText = getString(R.string.password_helper)
+
+                else -> {
+                    passLayout.error = null
+                    passLayout.helperText = null
                 }
-                result.isFailure -> { showLoginError() }
             }
         })
 
-        setInputListeners()
-
-        progressBar.indeterminateDrawable.setColorFilter(
-            ContextCompat.getColor(this, R.color.colorPrimary),
-            PorterDuff.Mode.SRC_IN
-        )
-
-        loginButton.setOnClickListener {
-            if (hasInputErrors()) return@setOnClickListener
-
-            showProgress()
-            login()
-        }
     }
 
     private fun startMemeActivity() {
@@ -64,14 +76,10 @@ class LoginActivity: AppCompatActivity() {
         finish()
     }
 
-    private fun hideProgress() {
-        loginButton.text = getString(R.string.sign_in)
-        loginButton.isClickable = true
-        progressBar.visibility = View.GONE
-    }
-
     private fun showLoginError() {
-        Snackbar.make(root, getString(R.string.login_fail), Snackbar.LENGTH_LONG).setBackgroundTint(ContextCompat.getColor(this, R.color.colorError)).show()
+        Snackbar.make(root, getString(R.string.login_fail), Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.colorError))
+            .show()
     }
 
     private fun setInputListeners() {
@@ -82,54 +90,49 @@ class LoginActivity: AppCompatActivity() {
     private fun setLoginInputListeners() {
         loginEditText.addTextChangedListener(object : PhoneNumberFormattingTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
-                loginLayout.error =
-                    if (loginEditText.text.isNullOrBlank())
-                        getString(R.string.password_helper)
-                    else null
+                viewModel.checkLoginInput(s?.toString())
 
                 super.afterTextChanged(s)
             }
         })
-
-        loginEditText.setOnFocusChangeListener { _, hasFocus ->
-            loginLayout.error = if (hasFocus) loginLayout.error else null
-        }
     }
 
     private fun setPassInputListeners() {
         passEditText.doAfterTextChanged {
-            passLayout.helperText =
-                if (passEditText.text.isNullOrBlank())
-                    getString(R.string.password_helper)
-                else null
-        }
-
-        passEditText.setOnFocusChangeListener { _, hasFocus ->
-            passLayout.helperText =
-                if (hasFocus && passEditText.text.isNullOrBlank())
-                    getString(R.string.password_helper)
-                else null
+            viewModel.checkPassInput(it?.toString())
         }
     }
 
-    private fun hasInputErrors(): Boolean {
-        val blankInputError = getString(R.string.blank_input_error)
-        loginLayout.error = if (loginEditText.text.isNullOrBlank()) blankInputError else null
-        passLayout.error = if (passEditText.text.isNullOrBlank()) blankInputError else null
-
-        return loginLayout.error != null || passLayout.error != null
-    }
-
-    private fun showProgress() {
-        loginButton.text = ""
-        loginButton.isClickable = false
-        progressBar.visibility = View.VISIBLE
+    private fun setLoginButtonListener() {
+        loginButton.setOnClickListener {
+            login()
+        }
     }
 
     private fun login() {
         val login = loginEditText.text.toString()
         val pass = passEditText.text.toString()
 
-        viewModel.userInputData.value = LoginRequest(login, pass)
+        viewModel.authorizeUser(LoginRequest(login, pass))
+    }
+
+    private fun setProgressBarColor() {
+        progressBar.indeterminateDrawable.setColorFilter(
+            ContextCompat.getColor(this, R.color.colorPrimary),
+            PorterDuff.Mode.SRC_IN
+        )
+    }
+
+    private fun hideProgress() {
+        loginButton.text = getString(R.string.sign_in)
+        loginButton.isClickable = true
+        progressBar.visibility = View.GONE
+
+    }
+
+    private fun showProgress() {
+        loginButton.text = ""
+        loginButton.isClickable = false
+        progressBar.visibility = View.VISIBLE
     }
 }
