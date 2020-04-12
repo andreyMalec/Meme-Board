@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [MemeData::class], version = 1)
-abstract class MemesDatabase: RoomDatabase() {
+abstract class MemesDatabase : RoomDatabase() {
     abstract fun memesDataDao(): MemesDao
 
     companion object {
@@ -18,9 +18,7 @@ abstract class MemesDatabase: RoomDatabase() {
                     database = Room.databaseBuilder(
                         context.applicationContext,
                         MemesDatabase::class.java, "memesDb"
-                    )
-                        .allowMainThreadQueries()
-                        .build()
+                    ).build()
                 }
             }
             return database

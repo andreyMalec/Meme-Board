@@ -1,7 +1,6 @@
 package com.proj.memeboard.model.response
 
 import com.proj.memeboard.localDb.MemeData
-import com.proj.memeboard.model.response.BaseResponse
 
 data class MemeResponse(
     val id: Long,
@@ -10,7 +9,7 @@ data class MemeResponse(
     val isFavorite: Boolean,
     val createdDate: Long,
     val photoUrl: String?
-): BaseResponse<MemeData> {
+) : BaseResponse<MemeData> {
     override fun convert(): MemeData {
         return MemeData(
             id,

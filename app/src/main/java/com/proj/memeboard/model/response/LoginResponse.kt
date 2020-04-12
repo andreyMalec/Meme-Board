@@ -2,7 +2,7 @@ package com.proj.memeboard.model.response
 
 import com.proj.memeboard.domain.User
 
-data class LoginResponse(val accessToken: String, val userInfo: UserInfo?): BaseResponse<User> {
+data class LoginResponse(val accessToken: String, val userInfo: UserInfo?) : BaseResponse<User> {
     override fun convert(): User {
         return User(
             accessToken,

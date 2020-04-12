@@ -1,24 +1,26 @@
-package com.proj.memeboard.ui.main
+package com.proj.memeboard.ui.main.home.detail
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CheckBox
-import androidx.cardview.widget.CardView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil.setContentView
+import androidx.lifecycle.ViewModelProvider
 import com.proj.memeboard.R
 import com.proj.memeboard.databinding.ActivityMemeDetailBinding
 import com.proj.memeboard.localDb.MemeData
+import com.proj.memeboard.ui.main.home.BaseMemeViewModel
 import com.proj.memeboard.util.MemeSharer
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MemeDetailActivity: AppCompatActivity() {
+class MemeDetailActivity : AppCompatActivity() {
     private lateinit var meme: MemeData
     private lateinit var binding: ActivityMemeDetailBinding
+    private lateinit var viewModel: BaseMemeViewModel
 
     companion object {
         fun getExtraIntent(context: Context, meme: MemeData): Intent {
@@ -39,7 +41,7 @@ class MemeDetailActivity: AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId) {
+        when (item?.itemId) {
             android.R.id.home -> supportFinishAfterTransition()
             R.id.shareButton -> MemeSharer(this).send(meme)
         }
@@ -49,6 +51,8 @@ class MemeDetailActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(this).get(BaseMemeViewModel::class.java)
 
         meme = getExtraMeme()
         binding = setContentView(this, R.layout.activity_meme_detail)
@@ -71,9 +75,19 @@ class MemeDetailActivity: AppCompatActivity() {
     }
 
     private fun initFavoriteListener() {
-        binding.favoriteLayout.setOnClickListener { it as CardView
-            val favBtn = it.getChildAt(0) as CheckBox
+        binding.favoriteLayout.setOnClickListener {
+            val favBtn = it.findViewById<CheckBox>(R.id.favoriteButton)
             favBtn.isChecked = !favBtn.isChecked
+
+            val updatedMeme = MemeData(
+                meme.id,
+                meme.title,
+                meme.description,
+                favBtn.isChecked,
+                meme.createdDate,
+                meme.photoUrl
+            )
+            viewModel.updateMeme(updatedMeme)
         }
     }
 

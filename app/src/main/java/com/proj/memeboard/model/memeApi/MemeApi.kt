@@ -1,7 +1,7 @@
 package com.proj.memeboard.model.memeApi
 
-import com.proj.memeboard.model.response.MemeResponse
 import com.proj.memeboard.model.response.LoginResponse
+import com.proj.memeboard.model.response.MemeResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.POST

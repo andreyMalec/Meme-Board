@@ -12,15 +12,13 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
-import com.proj.memeboard.ui.main.MainActivity
 import com.proj.memeboard.R
 import com.proj.memeboard.model.request.LoginRequest
+import com.proj.memeboard.ui.main.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
-class LoginActivity: AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
     private lateinit var viewModel: LoginViewModel
-
-    private val passwordSize = 8
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +47,26 @@ class LoginActivity: AppCompatActivity() {
             else hideProgress()
         })
 
-        viewModel.loginError.observe(this, Observer { error ->
+        viewModel.loadError.observe(this, Observer { error ->
             if (error) showLoginError()
         })
 
-        viewModel.userResult.observe(this, Observer {
-            //иначе не будет обрабатываться изменение LoginRequest
+        viewModel.loginInputError.observe(this, Observer { error ->
+            loginLayout.error =
+                if (error) getString(R.string.blank_input_error)
+                else null
+        })
+
+        viewModel.passInputError.observe(this, Observer { error ->
+            when (error) {
+                0 -> passLayout.error = getString(R.string.blank_input_error)
+                1 -> passLayout.helperText = getString(R.string.password_helper)
+
+                else -> {
+                    passLayout.error = null
+                    passLayout.helperText = null
+                }
+            }
         })
     }
 
@@ -77,64 +89,30 @@ class LoginActivity: AppCompatActivity() {
     private fun setLoginInputListeners() {
         loginEditText.addTextChangedListener(object : PhoneNumberFormattingTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
-                loginLayout.error =
-                    if (loginEditText.text.isNullOrBlank())
-                        getString(R.string.blank_input_error)
-                    else null
+                viewModel.checkLoginInput(s?.toString())
 
                 super.afterTextChanged(s)
             }
         })
-
-        loginEditText.setOnFocusChangeListener { _, hasFocus ->
-            loginLayout.error = if (hasFocus) loginLayout.error else null
-        }
     }
 
     private fun setPassInputListeners() {
         passEditText.doAfterTextChanged {
-            passLayout.error =
-                if (passEditText.text.isNullOrBlank())
-                    getString(R.string.blank_input_error)
-                else null
-            passLayout.helperText = null
-        }
-
-        passEditText.setOnFocusChangeListener { _, hasFocus ->
-            passLayout.helperText =
-                if (hasFocus && passEditText.text.isNullOrBlank())
-                    getString(R.string.password_helper)
-                else null
+            viewModel.checkPassInput(it?.toString())
         }
     }
 
     private fun setLoginButtonListener() {
         loginButton.setOnClickListener {
-            if (hasInputErrors()) showInputErrors()
-            else login()
+            login()
         }
-    }
-
-    private fun hasInputErrors(): Boolean =
-        loginEditText.text.isNullOrBlank() || passEditText.text.isNullOrBlank() || passEditText.text?.count() != passwordSize
-
-    private fun showInputErrors() {
-        val blankInputError = getString(R.string.blank_input_error)
-        loginLayout.error = if (loginEditText.text.isNullOrBlank()) blankInputError else null
-
-        passLayout.error = if (passEditText.text?.count() != passwordSize) {
-            if (passEditText.text.isNullOrBlank())
-                blankInputError
-            else
-                getString(R.string.password_helper)
-        } else null
     }
 
     private fun login() {
         val login = loginEditText.text.toString()
         val pass = passEditText.text.toString()
 
-        viewModel.userInputData.value = LoginRequest(login, pass)
+        viewModel.authorizeUser(LoginRequest(login, pass))
     }
 
     private fun setProgressBarColor() {

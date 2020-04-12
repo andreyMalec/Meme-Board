@@ -2,15 +2,20 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
-        <variable name="meme" type="com.proj.memeboard.localDb.MemeData"/>
-        <import type="com.proj.memeboard.ui.main.BindingAdapter"/>
+
+        <variable
+            name="meme"
+            type="com.proj.memeboard.localDb.MemeData" />
+
+        <import type="com.proj.memeboard.ui.main.BindingAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.MemeDetailActivity"
+        tools:context=".ui.main.home.detail.MemeDetailActivity"
         tools:ignore="UnusedAttribute">
 
         <androidx.appcompat.widget.Toolbar
@@ -23,7 +28,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/meme_detail_menu"/>
+            app:menu="@menu/meme_detail_menu" />
 
         <ScrollView
             android:layout_width="0dp"
@@ -79,12 +84,13 @@
                         android:id="@+id/favoriteLayout"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:layout_marginRight="8dp"
                         android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
                         android:layout_weight="0"
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?android:attr/selectableItemBackground"
+                        android:transitionName="favorite"
                         app:cardBackgroundColor="@android:color/transparent"
                         app:cardCornerRadius="40dp"
                         app:cardElevation="0dp"
@@ -92,9 +98,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:transitionName="favorite"
-                        tools:showIn="@layout/meme_layout">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <CheckBox
                             android:id="@+id/favoriteButton"
@@ -111,10 +115,10 @@
 
                 <TextView
                     android:id="@+id/description"
+                    htmlText="@{meme.description}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:text="@{meme.description}"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
             </LinearLayout>

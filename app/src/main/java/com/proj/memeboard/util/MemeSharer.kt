@@ -11,7 +11,7 @@ class MemeSharer(private val context: Context) {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT, meme.title + "\n" +
-                        meme.description.takeIf { it != null } + "\n" +
+                        (meme.description ?: "") + "\n" +
                         meme.photoUrl
             )
 

@@ -14,7 +14,7 @@ inline operator fun <reified T : Any> SharedPreferences.get(key: String): T {
 }
 
 operator fun SharedPreferences.set(key: String, value: Any) {
-    when(value) {
+    when (value) {
         is Int -> edit { it.putInt(key, value) }
         is String -> edit { it.putString(key, value) }
         is Long -> edit { it.putLong(key, value) }
