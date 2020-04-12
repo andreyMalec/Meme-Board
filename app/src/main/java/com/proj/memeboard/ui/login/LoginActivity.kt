@@ -68,6 +68,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         })
+
     }
 
     private fun startMemeActivity() {
@@ -126,6 +127,7 @@ class LoginActivity : AppCompatActivity() {
         loginButton.text = getString(R.string.sign_in)
         loginButton.isClickable = true
         progressBar.visibility = View.GONE
+
     }
 
     private fun showProgress() {
