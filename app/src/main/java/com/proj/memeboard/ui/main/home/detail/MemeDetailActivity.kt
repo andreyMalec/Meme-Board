@@ -85,7 +85,8 @@ class MemeDetailActivity : AppCompatActivity() {
                 meme.description,
                 favBtn.isChecked,
                 meme.createdDate,
-                meme.photoUrl
+                meme.photoUrl,
+                meme.author
             )
             viewModel.updateMeme(updatedMeme)
         }
@@ -99,7 +100,8 @@ class MemeDetailActivity : AppCompatActivity() {
             intent.getStringExtra("description"),
             intent.getBooleanExtra("isFavorite", false),
             intent.getLongExtra("createdDate", 0),
-            intent.getStringExtra("photoUrl")
+            intent.getStringExtra("photoUrl"),
+            intent.getStringExtra("author")
         )
     }
 }

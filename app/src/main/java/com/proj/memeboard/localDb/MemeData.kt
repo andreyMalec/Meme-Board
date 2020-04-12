@@ -11,5 +11,6 @@ data class MemeData(
     val description: String?,
     val isFavorite: Boolean,
     val createdDate: Long,
-    val photoUrl: String?
+    val photoUrl: String?,
+    val author: String?
 )
