@@ -100,12 +100,20 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction {
             errorText.visibility = View.VISIBLE
 
         val snackbar = Snackbar.make(root, getString(R.string.memes_load_error), Snackbar.LENGTH_LONG)
-        snackbar.anchorView = activity?.findViewById(R.id.nav_view)
+        snackbar.anchorView = activity?.findViewById(R.id.bottom_nav_view)
         snackbar.setBackgroundTint(ContextCompat.getColor(this.requireContext(), R.color.colorError))
         snackbar.show()
     }
 
     private fun initToolBar() {
+        toolbar.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.colorLightBackground
+            )
+        )
+        toolbarLayout.isTitleEnabled = false
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_activity_main)
         setHasOptionsMenu(true)
     }

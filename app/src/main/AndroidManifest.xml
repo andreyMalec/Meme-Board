@@ -28,7 +28,7 @@
         </activity>
 
         <provider
-            android:name=".ui.main.newMeme.NewMemeFileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}"
             android:exported="false"
             android:grantUriPermissions="true">

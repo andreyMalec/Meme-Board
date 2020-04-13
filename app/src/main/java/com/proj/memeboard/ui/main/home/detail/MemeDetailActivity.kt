@@ -15,7 +15,7 @@ import com.proj.memeboard.databinding.ActivityMemeDetailBinding
 import com.proj.memeboard.localDb.MemeData
 import com.proj.memeboard.ui.main.home.BaseMemeViewModel
 import com.proj.memeboard.util.MemeSharer
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_meme_detail.*
 
 class MemeDetailActivity : AppCompatActivity() {
     private lateinit var meme: MemeData
