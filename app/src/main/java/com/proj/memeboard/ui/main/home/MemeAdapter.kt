@@ -5,22 +5,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.cardview.widget.CardView
+import androidx.core.util.Pair
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.proj.memeboard.R
 import com.proj.memeboard.databinding.MemeLayoutBinding
-import com.proj.memeboard.localDb.MemeData
+import com.proj.memeboard.domain.Meme
 
 class MemeAdapter internal constructor(private val vm: MemeAction) :
-    ListAdapter<MemeData, MemeAdapter.MemeItemViewHolder>(diffUtilCallback) {
+    ListAdapter<Meme, MemeAdapter.MemeItemViewHolder>(diffUtilCallback) {
     companion object {
-        private val diffUtilCallback = object : DiffUtil.ItemCallback<MemeData>() {
-            override fun areItemsTheSame(oldItem: MemeData, newItem: MemeData): Boolean {
+        private val diffUtilCallback = object : DiffUtil.ItemCallback<Meme>() {
+            override fun areItemsTheSame(oldItem: Meme, newItem: Meme): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: MemeData, newItem: MemeData): Boolean {
+            override fun areContentsTheSame(oldItem: Meme, newItem: Meme): Boolean {
                 return oldItem.id == newItem.id &&
                         oldItem.title == newItem.title &&
                         oldItem.description == newItem.description &&
@@ -47,28 +48,38 @@ class MemeAdapter internal constructor(private val vm: MemeAction) :
         val binding: MemeLayoutBinding? = androidx.databinding.DataBindingUtil.bind(view)
 
         init {
-            binding?.favoriteLayout?.setOnClickListener {
-                it as CardView
-                val favBtn = it.findViewById<CheckBox>(R.id.favoriteButton)
+            binding?.favoriteLayout?.setOnClickListener { button ->
+                button as CardView
+                val favBtn = button.findViewById<CheckBox>(R.id.favoriteButton)
                 favBtn.isChecked = !favBtn.isChecked
-                vm.onMemeFavoriteClick(binding.meme, favBtn.isChecked)
+                binding.meme?.let {
+                    vm.onMemeFavoriteClick(it, favBtn.isChecked)
+                }
             }
 
             binding?.shareLayout?.setOnClickListener {
-                vm.onMemeShareClick(binding.meme)
+                binding.meme?.let {
+                    vm.onMemeShareClick(it)
+                }
             }
 
             binding?.image?.setOnClickListener {
-                vm.onMemeDetailClick(binding.meme, it, binding.title, binding.favoriteLayout)
+                binding.meme?.let {
+                    val p1 = Pair(binding.image as View, "image")
+                    val p2 = Pair(binding.title as View, "title")
+                    val p3 = Pair(binding.favoriteLayout as View, "favorite")
+
+                    vm.onMemeDetailClick(it, p1, p2, p3)
+                }
             }
         }
     }
 
     interface MemeAction {
-        fun onMemeShareClick(meme: MemeData?)
+        fun onMemeShareClick(meme: Meme)
 
-        fun onMemeFavoriteClick(meme: MemeData?, isFavorite: Boolean)
+        fun onMemeFavoriteClick(meme: Meme, isFavorite: Boolean)
 
-        fun onMemeDetailClick(meme: MemeData?, imageView: View, titleView: View, favoriteView: View)
+        fun onMemeDetailClick(meme: Meme, vararg transitionOptions: Pair<View, String>)
     }
 }

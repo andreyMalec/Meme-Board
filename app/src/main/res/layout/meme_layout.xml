@@ -6,7 +6,7 @@
     <data>
         <variable
             name="meme"
-            type="com.proj.memeboard.localDb.MemeData" />
+            type="com.proj.memeboard.domain.Meme" />
 
         <import type="com.proj.memeboard.ui.main.BindingAdapter" />
     </data>

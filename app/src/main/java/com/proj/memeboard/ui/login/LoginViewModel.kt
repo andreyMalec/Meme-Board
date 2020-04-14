@@ -4,22 +4,21 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.proj.memeboard.domain.User
-import com.proj.memeboard.localStorage.LocalStorageProvider
-import com.proj.memeboard.localStorage.UserPreferences
-import com.proj.memeboard.localStorage.set
-import com.proj.memeboard.model.memeRepo.MemeRepoProvider
-import com.proj.memeboard.model.request.LoginRequest
+import com.proj.memeboard.localStorage.userStorage.UserSharedPrefStorage
+import com.proj.memeboard.service.RepoProvider
+import com.proj.memeboard.service.network.request.LoginRequest
 
 class LoginViewModel(app: Application) : AndroidViewModel(app) {
-    private val repo = MemeRepoProvider.create("")
-    private val localStorage = LocalStorageProvider.create(app, UserPreferences.USER_PREFERENCES.key)
+    private val t = RepoProvider.initUserStorage(app)
+    private val userStorage = UserSharedPrefStorage(app)
+    private val authRepo = RepoProvider.authRepo
 
     private val passwordSize = 8
 
-    val userAuthorized = MutableLiveData(isUserAuthorized())
+    val isUserAuthorized = MutableLiveData(checkUserAuthorized())
     val isLoading = MutableLiveData(false)
-    val loadError = MutableLiveData(false)
-    val loginInputError = MutableLiveData(false)
+    val isLoadError = MutableLiveData(false)
+    val isLoginInputError = MutableLiveData(false)
     val passInputError = MutableLiveData(-1)
 
     fun authorizeUser(request: LoginRequest) {
@@ -28,13 +27,13 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
         if (hasInputErrors()) return
 
         isLoading.value = true
-        repo.login(request) { userResult ->
-            if (userResult.isSuccess) {
-                loadError.value = false
-                saveUserData(userResult.getOrNull())
-                userAuthorized.value = true
-            } else
-                loadError.value = true
+        authRepo.login(request) { user ->
+            isLoadError.value =
+                user.getOrNull()?.let {
+                    saveUserData(it)
+                    isUserAuthorized.value = true
+                    false
+                } ?: true
 
             isLoading.value = false
         }
@@ -46,30 +45,27 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun checkLoginInput(input: String?) {
-        loginInputError.value = input.isNullOrBlank()
+        isLoginInputError.value = input.isNullOrBlank()
     }
 
     fun checkPassInput(input: String?) {
-        passInputError.value = if (input?.length != passwordSize) {
-            if (input.isNullOrBlank()) 0
+        passInputError.value = validatePass(input)
+    }
+
+    private fun validatePass(pass: String?): Int {
+        return if (pass?.length != passwordSize) {
+            if (pass.isNullOrBlank()) 0
             else 1
         } else -1
     }
 
     private fun hasInputErrors(): Boolean {
-        return loginInputError.value == true || passInputError.value != -1
+        return isLoginInputError.value == true || passInputError.value != -1
     }
 
-    private fun isUserAuthorized(): Boolean {
-        return localStorage.contains(UserPreferences.TOKEN.key)
-    }
+    private fun checkUserAuthorized(): Boolean = userStorage.isUserAuthorized()
 
-    private fun saveUserData(user: User?) {
-        localStorage[UserPreferences.TOKEN.key] = user?.token ?: ""
-        localStorage[UserPreferences.ID.key] = user?.id ?: -1
-        localStorage[UserPreferences.USER_NAME.key] = user?.userName ?: "userName"
-        localStorage[UserPreferences.FIRST_NAME.key] = user?.firstName ?: "firstName"
-        localStorage[UserPreferences.LAST_NAME.key] = user?.lastName ?: "lastName"
-        localStorage[UserPreferences.DESC.key] = user?.userDescription ?: "description"
+    private fun saveUserData(user: User) {
+        userStorage.setUser(user)
     }
 }

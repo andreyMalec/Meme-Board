@@ -1,10 +1,10 @@
-package com.proj.memeboard.localDb
+package com.proj.memeboard.domain
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class MemeData(
+data class Meme(
     @PrimaryKey
     val id: Long,
     val title: String?,

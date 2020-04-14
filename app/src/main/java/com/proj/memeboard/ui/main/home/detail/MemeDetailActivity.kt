@@ -12,18 +12,18 @@ import androidx.databinding.DataBindingUtil.setContentView
 import androidx.lifecycle.ViewModelProvider
 import com.proj.memeboard.R
 import com.proj.memeboard.databinding.ActivityMemeDetailBinding
-import com.proj.memeboard.localDb.MemeData
-import com.proj.memeboard.ui.main.home.BaseMemeViewModel
+import com.proj.memeboard.domain.Meme
+import com.proj.memeboard.ui.main.BaseMemeViewModel
 import com.proj.memeboard.util.MemeSharer
 import kotlinx.android.synthetic.main.activity_meme_detail.*
 
 class MemeDetailActivity : AppCompatActivity() {
-    private lateinit var meme: MemeData
+    private lateinit var meme: Meme
     private lateinit var binding: ActivityMemeDetailBinding
     private lateinit var viewModel: BaseMemeViewModel
 
     companion object {
-        fun getExtraIntent(context: Context, meme: MemeData): Intent {
+        fun getExtraIntent(context: Context, meme: Meme): Intent {
             return Intent(context, MemeDetailActivity::class.java).apply {
                 putExtra("id", meme.id)
                 putExtra("title", meme.title)
@@ -79,7 +79,7 @@ class MemeDetailActivity : AppCompatActivity() {
             val favBtn = it.findViewById<CheckBox>(R.id.favoriteButton)
             favBtn.isChecked = !favBtn.isChecked
 
-            val updatedMeme = MemeData(
+            val updatedMeme = Meme(
                 meme.id,
                 meme.title,
                 meme.description,
@@ -88,13 +88,13 @@ class MemeDetailActivity : AppCompatActivity() {
                 meme.photoUrl,
                 meme.author
             )
-            viewModel.updateMeme(updatedMeme)
+            viewModel.toggleFavorite(updatedMeme)
         }
     }
 
-    private fun getExtraMeme(): MemeData {
+    private fun getExtraMeme(): Meme {
         val intent = intent
-        return MemeData(
+        return Meme(
             intent.getLongExtra("id", 0),
             intent.getStringExtra("title"),
             intent.getStringExtra("description"),

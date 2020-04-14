@@ -1,4 +1,4 @@
-package com.proj.memeboard.localStorage
+package com.proj.memeboard.localStorage.userStorage
 
 enum class UserPreferences(val key: String) {
     USER_PREFERENCES("loginData"),

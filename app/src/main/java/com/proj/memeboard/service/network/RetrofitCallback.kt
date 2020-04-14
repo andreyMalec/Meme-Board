@@ -1,4 +1,4 @@
-package com.proj.memeboard.model
+package com.proj.memeboard.service.network
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -13,6 +13,11 @@ class RetrofitCallback<T>(val onSuccess: (T) -> Unit, val onError: (Throwable) -
         val body = response.body()
 
         if (response.isSuccessful && body != null) onSuccess(body)
-        else onError(IllegalStateException("Response isn't successful"))
+        else {
+            if (response.isSuccessful)
+                onError(IllegalStateException("Body is null"))
+            else
+                onError(IllegalStateException("Response isn't successful"))
+        }
     }
 }

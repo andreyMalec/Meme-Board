@@ -31,4 +31,7 @@
     </string-array>
     <string name="attach_text">Select image source</string>
     <string name="new_meme_created">New meme created</string>
+
+    <string name="logout_text">Logout</string>
+    <string name="about_text">About</string>
 </resources>

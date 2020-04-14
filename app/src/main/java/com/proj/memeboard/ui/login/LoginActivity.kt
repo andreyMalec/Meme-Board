@@ -13,7 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
-import com.proj.memeboard.model.request.LoginRequest
+import com.proj.memeboard.service.network.request.LoginRequest
 import com.proj.memeboard.ui.main.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -37,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initViewModelListeners() {
-        viewModel.userAuthorized.observe(this, Observer { authorized ->
+        viewModel.isUserAuthorized.observe(this, Observer { authorized ->
             if (authorized)
                 startMemeActivity()
         })
@@ -47,11 +47,11 @@ class LoginActivity : AppCompatActivity() {
             else hideProgress()
         })
 
-        viewModel.loadError.observe(this, Observer { error ->
+        viewModel.isLoadError.observe(this, Observer { error ->
             if (error) showLoginError()
         })
 
-        viewModel.loginInputError.observe(this, Observer { error ->
+        viewModel.isLoginInputError.observe(this, Observer { error ->
             loginLayout.error =
                 if (error) getString(R.string.blank_input_error)
                 else null

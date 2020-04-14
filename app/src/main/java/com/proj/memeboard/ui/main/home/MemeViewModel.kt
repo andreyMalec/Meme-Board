@@ -3,34 +3,20 @@ package com.proj.memeboard.ui.main.home
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
-import com.proj.memeboard.localDb.MemeData
-import com.proj.memeboard.localStorage.LocalStorageProvider
-import com.proj.memeboard.localStorage.UserPreferences
-import com.proj.memeboard.localStorage.get
-import com.proj.memeboard.model.memeRepo.MemeRepoProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.proj.memeboard.domain.Meme
+import com.proj.memeboard.service.RepoProvider
+import com.proj.memeboard.ui.main.BaseMemeViewModel
 
 class MemeViewModel(app: Application) : BaseMemeViewModel(app) {
-    private val localStorage = LocalStorageProvider.create(app, UserPreferences.USER_PREFERENCES.key)
-    private val repo = MemeRepoProvider.create(localStorage[UserPreferences.TOKEN.key])
+    private val memeRepo = RepoProvider.memeRepo
 
-    val memes: LiveData<List<MemeData>>
+    val memes: LiveData<List<Meme>>
     val searchQuery = MutableLiveData<String>(null)
     val isLoading = MutableLiveData(false)
-    val loadError = MutableLiveData(false)
+    val isLoadError = MutableLiveData(false)
 
     init {
-        memes = Transformations.switchMap(searchQuery) {
-            if (it.isNullOrBlank()) {
-                dao.getAllLiveData()
-            } else {
-                val formattedQuery = "%" + it.trim().toLowerCase() + "%"
-                dao.getMemesTitleContains(formattedQuery)
-            }
-        }
+        memes = dbRepo.getTitleContainsOrAll(searchQuery)
 
         loadMemes()
     }
@@ -43,17 +29,12 @@ class MemeViewModel(app: Application) : BaseMemeViewModel(app) {
     private fun loadMemes() {
         isLoading.value = true
 
-        repo.getMemes { memesResult ->
-            loadError.value =
-                if (memesResult.isSuccess) {
-                    memesResult.getOrNull()?.let { memes ->
-                        viewModelScope.launch(Dispatchers.IO) {
-                            dao.insertAll(memes.map { it.convert() })
-                        }
-                        false
-                    } ?: true
-                } else
-                    true
+        memeRepo.getMemes { memes ->
+            isLoadError.value =
+                memes.getOrNull()?.let {
+                    dbRepo.cacheMemes(it)
+                    false
+                } ?: true
 
             isLoading.value = false
         }
