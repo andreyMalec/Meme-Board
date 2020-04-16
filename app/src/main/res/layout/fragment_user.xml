@@ -10,9 +10,9 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
-        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/toolbarLayout"
@@ -26,23 +26,23 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"/>
+                android:layout_height="?attr/actionBarSize" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginTop="50dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="4dp"
                     app:cardBackgroundColor="@color/colorAccent"
                     app:cardCornerRadius="50dp"
                     app:cardElevation="0dp"
                     app:cardMaxElevation="0dp"
-                    android:padding="4dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -50,9 +50,9 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/userImageLayout"
-                        android:layout_margin="0.8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_margin="0.8dp"
                         app:cardBackgroundColor="@color/colorLightBackground"
                         app:cardCornerRadius="50dp"
                         app:cardElevation="0dp"
@@ -66,8 +66,8 @@
                             android:id="@+id/userImage"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:layout_margin="6dp"
                             android:layout_gravity="center"
+                            android:layout_margin="6dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/icon" />
                     </androidx.cardview.widget.CardView>
@@ -87,15 +87,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
 
                 <View
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
+                    android:layout_height="2dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
-                    android:layout_height="2dp"
-                    android:background="@color/colorLight"/>
+                    android:background="@color/colorLight" />
             </LinearLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -108,7 +108,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <ProgressBar
         android:id="@+id/progressBar"

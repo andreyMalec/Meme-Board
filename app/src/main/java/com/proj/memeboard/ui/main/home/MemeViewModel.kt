@@ -1,14 +1,17 @@
 package com.proj.memeboard.ui.main.home
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.service.RepoProvider
-import com.proj.memeboard.ui.main.BaseMemeViewModel
+import com.proj.memeboard.service.localDb.repo.DbRepo
+import com.proj.memeboard.service.network.repo.memeRepo.MemeRepo
+import javax.inject.Inject
 
-class MemeViewModel(app: Application) : BaseMemeViewModel(app) {
-    private val memeRepo = RepoProvider.memeRepo
+class MemeViewModel @Inject constructor(
+    private val dbRepo: DbRepo,
+    private val memeRepo: MemeRepo
+) : ViewModel() {
 
     val memes: LiveData<List<Meme>>
     val searchQuery = MutableLiveData<String>(null)
@@ -24,6 +27,10 @@ class MemeViewModel(app: Application) : BaseMemeViewModel(app) {
     fun refreshMemes() {
         searchQuery.value = null
         loadMemes()
+    }
+
+    fun toggleFavorite(meme: Meme) {
+        dbRepo.toggleFavorite(meme)
     }
 
     private fun loadMemes() {

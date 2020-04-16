@@ -1,11 +1,13 @@
-package com.proj.memeboard.ui.main.home.detail
+package com.proj.memeboard.ui.main.detail
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CheckBox
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil.setContentView
@@ -13,14 +15,25 @@ import androidx.lifecycle.ViewModelProvider
 import com.proj.memeboard.R
 import com.proj.memeboard.databinding.ActivityMemeDetailBinding
 import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.ui.main.BaseMemeViewModel
 import com.proj.memeboard.util.MemeSharer
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
 import kotlinx.android.synthetic.main.activity_meme_detail.*
+import javax.inject.Inject
 
-class MemeDetailActivity : AppCompatActivity() {
+class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: MemeDetailViewModel by viewModels {
+        viewModelFactory
+    }
+
     private lateinit var meme: Meme
     private lateinit var binding: ActivityMemeDetailBinding
-    private lateinit var viewModel: BaseMemeViewModel
 
     companion object {
         fun getExtraIntent(context: Context, meme: Meme): Intent {
@@ -34,6 +47,8 @@ class MemeDetailActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun activityInjector() = dispatchingAndroidInjector
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.meme_detail_menu, menu)
@@ -51,8 +66,6 @@ class MemeDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = ViewModelProvider(this).get(BaseMemeViewModel::class.java)
 
         meme = getExtraMeme()
         binding = setContentView(this, R.layout.activity_meme_detail)

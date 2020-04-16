@@ -9,19 +9,28 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
+import com.proj.memeboard.di.Injectable
 import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.ui.main.home.detail.MemeDetailActivity
+import com.proj.memeboard.ui.main.detail.MemeDetailActivity
 import com.proj.memeboard.util.MemeSharer
 import kotlinx.android.synthetic.main.fragment_meme.*
+import javax.inject.Inject
 
-class MemeFragment : Fragment(), MemeAdapter.MemeAction {
-    private lateinit var viewModel: MemeViewModel
+class MemeFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: MemeViewModel by viewModels {
+        viewModelFactory
+    }
+
     private lateinit var searchView: SearchView
     private val adapter = MemeAdapter(this)
 
@@ -60,8 +69,6 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProvider(this).get(MemeViewModel::class.java)
 
         setViewModelListeners()
         initToolBar()

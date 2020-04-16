@@ -1,4 +1,4 @@
-package com.proj.memeboard.service.localDb.dbRepo
+package com.proj.memeboard.service.localDb.repo
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations

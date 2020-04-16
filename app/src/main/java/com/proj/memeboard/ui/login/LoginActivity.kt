@@ -1,11 +1,13 @@
 package com.proj.memeboard.ui.login
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.Editable
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
@@ -15,16 +17,27 @@ import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
 import com.proj.memeboard.service.network.request.LoginRequest
 import com.proj.memeboard.ui.main.MainActivity
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
 import kotlinx.android.synthetic.main.activity_login.*
+import javax.inject.Inject
 
-class LoginActivity : AppCompatActivity() {
-    private lateinit var viewModel: LoginViewModel
+class LoginActivity : AppCompatActivity(), HasActivityInjector {
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    val viewModel: LoginViewModel by viewModels {
+        viewModelFactory
+    }
+
+    override fun activityInjector() = dispatchingAndroidInjector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
         initListeners()
         setProgressBarColor()
@@ -68,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         })
-
     }
 
     private fun startMemeActivity() {

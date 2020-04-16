@@ -5,7 +5,7 @@ import com.proj.memeboard.domain.User
 import com.proj.memeboard.localStorage.get
 import com.proj.memeboard.localStorage.set
 
-class UserSharedPrefStorage(context: Context): UserStorage {
+class UserSharedPrefStorage(context: Context) : UserStorage {
     private val localStorage =
         context.getSharedPreferences(UserPreferences.USER_PREFERENCES.key, Context.MODE_PRIVATE)
 

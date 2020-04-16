@@ -6,8 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
@@ -17,12 +15,14 @@ import androidx.core.content.FileProvider
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.BuildConfig
 import com.proj.memeboard.R
+import com.proj.memeboard.di.Injectable
 import com.proj.memeboard.ui.main.newMeme.NewMemeViewModel.Companion.CAMERA
 import com.proj.memeboard.ui.main.newMeme.NewMemeViewModel.Companion.GALLERY
 import com.proj.memeboard.ui.main.newMeme.NewMemeViewModel.Companion.TEMP_MEME_PATH
@@ -30,10 +30,17 @@ import com.proj.memeboard.ui.main.newMeme.dialog.AttachSourceDialog
 import com.proj.memeboard.ui.main.newMeme.dialog.AttachSourceDialog.DialogResult
 import kotlinx.android.synthetic.main.fragment_new_meme.*
 import java.io.File
+import javax.inject.Inject
 
-class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener {
+class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener, Injectable {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: NewMemeViewModel by viewModels {
+        viewModelFactory
+    }
+
     private lateinit var createMeme: MenuItem
-    private lateinit var viewModel: NewMemeViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_new_meme, container, false)
@@ -41,8 +48,6 @@ class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProvider(this).get(NewMemeViewModel::class.java)
 
         initToolBar()
         initListeners()

@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.home.detail.MemeDetailActivity"
+        tools:context=".ui.main.detail.MemeDetailActivity"
         tools:ignore="UnusedAttribute">
 
         <androidx.appcompat.widget.Toolbar

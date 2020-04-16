@@ -8,6 +8,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -16,15 +17,22 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
+import com.proj.memeboard.di.Injectable
 import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.localStorage.userStorage.UserStorageProvider
+import com.proj.memeboard.ui.main.detail.MemeDetailActivity
 import com.proj.memeboard.ui.main.home.MemeAdapter
-import com.proj.memeboard.ui.main.home.detail.MemeDetailActivity
 import com.proj.memeboard.util.MemeSharer
 import kotlinx.android.synthetic.main.fragment_user.*
+import javax.inject.Inject
 
-class UserFragment : Fragment(), MemeAdapter.MemeAction {
-    private lateinit var viewModel: UserViewModel
+class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: UserViewModel by viewModels {
+        viewModelFactory
+    }
+
     private val adapter = MemeAdapter(this)
 
     private var firstLoad = true
@@ -42,18 +50,12 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(UserViewModel::class.java)
-
         Glide.with(this).load(R.drawable.icon).apply(RequestOptions.circleCropTransform()).into(userImage)
 
         setViewModelListeners()
         initToolBar()
 
         initRecycler()
-        val localStorage = UserStorageProvider.create(requireContext())
-
-        userName.text = localStorage.getFirstName()
-        userDesc.text = localStorage.getUserDescription()
     }
 
     private fun setViewModelListeners() {

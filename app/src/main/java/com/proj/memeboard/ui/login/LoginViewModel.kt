@@ -1,17 +1,17 @@
 package com.proj.memeboard.ui.login
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.proj.memeboard.domain.User
-import com.proj.memeboard.localStorage.userStorage.UserSharedPrefStorage
-import com.proj.memeboard.service.RepoProvider
+import com.proj.memeboard.localStorage.userStorage.UserStorage
+import com.proj.memeboard.service.network.repo.authRepo.AuthRepo
 import com.proj.memeboard.service.network.request.LoginRequest
+import javax.inject.Inject
 
-class LoginViewModel(app: Application) : AndroidViewModel(app) {
-    private val t = RepoProvider.initUserStorage(app)
-    private val userStorage = UserSharedPrefStorage(app)
-    private val authRepo = RepoProvider.authRepo
+class LoginViewModel @Inject constructor(
+    private val userStorage: UserStorage,
+    private val authRepo: AuthRepo
+) : ViewModel() {
 
     private val passwordSize = 8
 

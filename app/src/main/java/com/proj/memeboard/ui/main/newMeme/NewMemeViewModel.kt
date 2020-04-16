@@ -1,20 +1,23 @@
 package com.proj.memeboard.ui.main.newMeme
 
-import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.localStorage.userStorage.UserStorageProvider
-import com.proj.memeboard.service.RepoProvider
+import com.proj.memeboard.localStorage.userStorage.UserStorage
+import com.proj.memeboard.service.localDb.repo.DbRepo
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import javax.inject.Inject
 
-class NewMemeViewModel(private val app: Application) : AndroidViewModel(app) {
-    private val userStorage = UserStorageProvider.create(app)
-    private val dbRepo = RepoProvider.dbRepo
+class NewMemeViewModel @Inject constructor(
+    private val context: Context,
+    private val userStorage: UserStorage,
+    private val dbRepo: DbRepo
+) : ViewModel() {
 
     val memeImage = MutableLiveData<Bitmap>(null)
     val title = MutableLiveData("")
@@ -32,7 +35,7 @@ class NewMemeViewModel(private val app: Application) : AndroidViewModel(app) {
     fun createMeme() {
         val time = Calendar.getInstance().time.time
 
-        val memeImageFile = File(app.cacheDir, "meme$time.jpg")
+        val memeImageFile = File(context.cacheDir, "meme$time.jpg")
         memeImageFile.createNewFile()
 
         saveMemeImage(memeImageFile)
@@ -40,7 +43,7 @@ class NewMemeViewModel(private val app: Application) : AndroidViewModel(app) {
         val userName: String = userStorage.getUserName()
         val userFirstName: String = userStorage.getFirstName()
         val userLastName: String = userStorage.getLastName()
-        val author =  "${userName}_${userFirstName}_${userLastName}"
+        val author = "${userName}_${userFirstName}_${userLastName}"
 
         addMeme(
             Meme(
