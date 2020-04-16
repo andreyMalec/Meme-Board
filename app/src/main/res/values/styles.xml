@@ -9,7 +9,11 @@
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="android:homeAsUpIndicator">@drawable/back</item>
         <item name="android:actionMenuTextColor">@color/action_text_color</item>
-        <item name="android:itemBackground">@color/colorLightBackground</item>
+        <item name="colorBackgroundFloating">@color/colorLightBackground</item>
+    </style>
+
+    <style name="AppTheme.PopupMenu" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/colorLightBackground</item>
     </style>
 
     <style name="AppTheme.OverflowButton">

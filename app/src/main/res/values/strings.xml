@@ -34,4 +34,7 @@
 
     <string name="logout_text">Logout</string>
     <string name="about_text">About</string>
+    <string name="logout_dialog_title">Do you really want to log out?</string>
+    <string name="logout_dialog_ok">Logout</string>
+    <string name="logout_dialog_cancel">Cancel</string>
 </resources>

@@ -25,4 +25,6 @@ interface UserStorage {
 
     fun getUserDescription(): String
     fun setUserDescription(value: String)
+
+    fun clear()
 }

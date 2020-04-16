@@ -29,9 +29,11 @@ import com.proj.memeboard.ui.main.newMeme.NewMemeViewModel.Companion.TEMP_MEME_P
 import com.proj.memeboard.ui.main.newMeme.dialog.AttachSourceDialog
 import com.proj.memeboard.ui.main.newMeme.dialog.AttachSourceDialog.DialogResult
 import kotlinx.android.synthetic.main.fragment_new_meme.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener, Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

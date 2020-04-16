@@ -1,8 +1,11 @@
 package com.proj.memeboard.ui.main.user
 
+import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
@@ -19,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
 import com.proj.memeboard.di.Injectable
 import com.proj.memeboard.domain.Meme
+import com.proj.memeboard.ui.login.LoginActivity
 import com.proj.memeboard.ui.main.detail.MemeDetailActivity
 import com.proj.memeboard.ui.main.home.MemeAdapter
 import com.proj.memeboard.util.MemeSharer
@@ -49,6 +53,30 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.about -> {
+                true
+            }
+            R.id.logout -> {
+                showLogoutDialog()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showLogoutDialog() {
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(getString(R.string.logout_dialog_title))
+            setMessage("")
+            setPositiveButton(getString(R.string.logout_dialog_ok)) { _: DialogInterface, _: Int ->
+                viewModel.logout()
+            }
+            setNegativeButton(getString(R.string.logout_dialog_cancel), null)
+        }.show()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -74,8 +102,21 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
             else hideProgress()
         })
 
-        viewModel.loadError.observe(viewLifecycleOwner, Observer { error ->
+        viewModel.isLoadError.observe(viewLifecycleOwner, Observer { error ->
             if (error) showLoadError()
+        })
+
+        viewModel.userName.observe(viewLifecycleOwner, Observer { name ->
+            userName.text = name
+        })
+
+        viewModel.userDesc.observe(viewLifecycleOwner, Observer { desc ->
+            userDesc.text = desc
+        })
+
+        viewModel.isLogout.observe(viewLifecycleOwner, Observer { logout ->
+            if (logout)
+                startMemeActivity()
         })
     }
 
@@ -96,6 +137,11 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
         snackbar.anchorView = activity?.findViewById(R.id.bottom_nav_view)
         snackbar.setBackgroundTint(ContextCompat.getColor(this.requireContext(), R.color.colorError))
         snackbar.show()
+    }
+
+    private fun startMemeActivity() {
+        startActivity(Intent(requireContext(), LoginActivity::class.java))
+        activity?.finish()
     }
 
     private fun initToolBar() {

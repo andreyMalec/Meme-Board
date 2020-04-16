@@ -2,6 +2,7 @@ package com.proj.memeboard.localStorage.userStorage
 
 import android.content.Context
 import com.proj.memeboard.domain.User
+import com.proj.memeboard.localStorage.clear
 import com.proj.memeboard.localStorage.get
 import com.proj.memeboard.localStorage.set
 
@@ -63,5 +64,9 @@ class UserSharedPrefStorage(context: Context) : UserStorage {
 
     override fun setUserDescription(value: String) {
         localStorage[UserPreferences.DESC.key] = value
+    }
+
+    override fun clear() {
+        localStorage.clear()
     }
 }

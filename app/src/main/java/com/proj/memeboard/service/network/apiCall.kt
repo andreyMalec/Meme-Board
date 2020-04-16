@@ -13,6 +13,7 @@ suspend fun <T> apiCall(dispatcher: CoroutineDispatcher, apiCall: suspend () -> 
             when (throwable) {
                 is IOException -> Result.NetworkError
                 is HttpException -> Result.Failure(throwable.code(), throwable.message())
+                is ArrayIndexOutOfBoundsException -> Result.Failure(204, "no content")//empty body response
 
                 else -> Result.Failure(null, null)
             }

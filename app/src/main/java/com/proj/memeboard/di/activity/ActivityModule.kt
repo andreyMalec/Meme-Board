@@ -7,7 +7,9 @@ import com.proj.memeboard.ui.main.MainActivity
 import com.proj.memeboard.ui.main.detail.MemeDetailActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @Module(includes = [NetworkModule::class, DbModule::class])
 abstract class ActivityModule {
     @ContributesAndroidInjector(modules = [FragmentBuildersModule::class])
