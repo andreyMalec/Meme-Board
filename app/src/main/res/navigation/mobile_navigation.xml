@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.proj.memeboard.ui.main.home.MemeFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_activity_main"
         tools:layout="@layout/fragment_meme" />
 
     <fragment

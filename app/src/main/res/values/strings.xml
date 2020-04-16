@@ -20,4 +20,15 @@
     <string name="date_yesterday">Yesterday</string>
     <string name="date_n_days_ago">%1$d days ago</string>
     <string name="search_hint">Search…</string>
+
+    <string name="new_meme_title_hint">Title</string>
+    <string name="new_meme_description_hint">Description</string>
+    <string name="new_meme_create">Create</string>
+
+    <string-array name="attach_source">
+        <item>Select from gallery</item>
+        <item>Make a new photo</item>
+    </string-array>
+    <string name="attach_text">Select image source</string>
+    <string name="new_meme_created">New meme created</string>
 </resources>

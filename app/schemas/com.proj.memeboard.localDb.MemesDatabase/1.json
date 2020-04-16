@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4a911442074a2750f7f86a39ad1f6179",
+    "identityHash": "dfb019dfcf2f21dd749cfe103edf8b45",
     "entities": [
       {
         "tableName": "MemeData",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT, `description` TEXT, `isFavorite` INTEGER NOT NULL, `createdDate` INTEGER NOT NULL, `photoUrl` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT, `description` TEXT, `isFavorite` INTEGER NOT NULL, `createdDate` INTEGER NOT NULL, `photoUrl` TEXT, `author` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -43,6 +43,12 @@
             "columnName": "photoUrl",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -58,7 +64,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4a911442074a2750f7f86a39ad1f6179')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dfb019dfcf2f21dd749cfe103edf8b45')"
     ]
   }
 }

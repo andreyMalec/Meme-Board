@@ -17,7 +17,8 @@ data class MemeResponse(
             description,
             isFavorite,
             createdDate,
-            photoUrl
+            photoUrl,
+            null
         )
     }
 }

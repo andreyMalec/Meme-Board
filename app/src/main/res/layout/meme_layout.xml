@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="meme"
             type="com.proj.memeboard.localDb.MemeData" />
@@ -69,7 +68,7 @@
                     android:foreground="?android:attr/selectableItemBackground"
                     android:transitionName="favorite"
                     app:cardBackgroundColor="@android:color/transparent"
-                    app:cardCornerRadius="40dp"
+                    app:cardCornerRadius="20dp"
                     app:cardElevation="0dp"
                     app:cardMaxElevation="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -97,7 +96,7 @@
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardBackgroundColor="@android:color/transparent"
-                    app:cardCornerRadius="40dp"
+                    app:cardCornerRadius="20dp"
                     app:cardElevation="0dp"
                     app:cardMaxElevation="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"

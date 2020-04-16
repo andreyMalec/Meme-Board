@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 open class BaseMemeViewModel(app: Application) : AndroidViewModel(app) {
-    internal val dao = MemesDatabase.getInstance(app.applicationContext)!!.memesDataDao()
+    internal val dao = MemesDatabase.getInstance(app)!!.memesDataDao()
 
     fun updateMeme(meme: MemeData) {
         viewModelScope.launch(Dispatchers.IO) {

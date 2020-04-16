@@ -11,8 +11,8 @@ import com.proj.memeboard.model.memeRepo.MemeRepoProvider
 import com.proj.memeboard.model.request.LoginRequest
 
 class LoginViewModel(app: Application) : AndroidViewModel(app) {
-    private val repo = MemeRepoProvider.memeRepo
-    private val localStorage = LocalStorageProvider.create(app.applicationContext, UserPreferences.USER_PREFERENCES.key)
+    private val repo = MemeRepoProvider.create("")
+    private val localStorage = LocalStorageProvider.create(app, UserPreferences.USER_PREFERENCES.key)
 
     private val passwordSize = 8
 

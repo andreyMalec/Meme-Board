@@ -8,6 +8,7 @@
         </item>
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="android:homeAsUpIndicator">@drawable/back</item>
+        <item name="android:actionMenuTextColor">@color/action_text_color</item>
     </style>
 
     <style name="AppTheme.Detail" parent="AppTheme">
