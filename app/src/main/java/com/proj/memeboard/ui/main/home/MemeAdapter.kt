@@ -53,7 +53,7 @@ class MemeAdapter internal constructor(private val vm: MemeAction) :
                 val favBtn = button.findViewById<CheckBox>(R.id.favoriteButton)
                 favBtn.isChecked = !favBtn.isChecked
                 binding.meme?.let {
-                    vm.onMemeFavoriteClick(it, favBtn.isChecked)
+                    vm.onMemeFavoriteClick(it)
                 }
             }
 
@@ -78,7 +78,7 @@ class MemeAdapter internal constructor(private val vm: MemeAction) :
     interface MemeAction {
         fun onMemeShareClick(meme: Meme)
 
-        fun onMemeFavoriteClick(meme: Meme, isFavorite: Boolean)
+        fun onMemeFavoriteClick(meme: Meme)
 
         fun onMemeDetailClick(meme: Meme, vararg transitionOptions: Pair<View, String>)
     }

@@ -1,16 +1,16 @@
 package com.proj.memeboard.ui.main.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.service.localDb.repo.DbRepo
 import com.proj.memeboard.service.network.Result
 import com.proj.memeboard.service.network.repo.memeRepo.MemeRepo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class MemeViewModel @Inject constructor(
     private val dbRepo: DbRepo,
     private val memeRepo: MemeRepo
@@ -22,7 +22,12 @@ class MemeViewModel @Inject constructor(
     val isLoadError = MutableLiveData(false)
 
     init {
-        memes = dbRepo.getTitleContainsOrAll(searchQuery)
+        memes = searchQuery.asFlow().flatMapLatest { query ->
+            if (query.isNullOrBlank())
+                dbRepo.getAll()
+            else
+                dbRepo.getTitleContains(query)
+        }.asLiveData()
 
         loadMemes()
     }
@@ -33,7 +38,16 @@ class MemeViewModel @Inject constructor(
     }
 
     fun toggleFavorite(meme: Meme) {
-        dbRepo.toggleFavorite(meme)
+        val updatedMeme = Meme(
+            meme.id,
+            meme.title,
+            meme.description,
+            !meme.isFavorite,
+            meme.createdDate,
+            meme.photoUrl,
+            meme.author
+        )
+        dbRepo.toggleFavorite(viewModelScope, updatedMeme)
     }
 
     private fun loadMemes() {
@@ -43,7 +57,7 @@ class MemeViewModel @Inject constructor(
             val userResult = memeRepo.getMemes()
             isLoadError.value =
                 if (userResult is Result.Success) {
-                    dbRepo.cacheMemes(userResult.value)
+                    dbRepo.cacheMemes(this, userResult.value)
                     false
                 } else true
 

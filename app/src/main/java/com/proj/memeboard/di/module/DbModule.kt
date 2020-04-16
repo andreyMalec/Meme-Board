@@ -6,8 +6,10 @@ import com.proj.memeboard.service.localDb.MemesDatabase
 import com.proj.memeboard.service.localDb.repo.DbRepo
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
+@ExperimentalCoroutinesApi
 @Module(includes = [ContextModule::class])
 class DbModule {
     private lateinit var database: MemesDatabase

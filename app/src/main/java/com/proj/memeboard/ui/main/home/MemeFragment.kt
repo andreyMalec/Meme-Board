@@ -21,8 +21,10 @@ import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.ui.main.detail.MemeDetailActivity
 import com.proj.memeboard.util.MemeSharer
 import kotlinx.android.synthetic.main.fragment_meme.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class MemeFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -143,17 +145,8 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
         MemeSharer(requireContext()).send(meme)
     }
 
-    override fun onMemeFavoriteClick(meme: Meme, isFavorite: Boolean) {
-        val updatedMeme = Meme(
-            meme.id,
-            meme.title,
-            meme.description,
-            isFavorite,
-            meme.createdDate,
-            meme.photoUrl,
-            meme.author
-        )
-        viewModel.toggleFavorite(updatedMeme)
+    override fun onMemeFavoriteClick(meme: Meme) {
+        viewModel.toggleFavorite(meme)
     }
 
     override fun onMemeDetailClick(meme: Meme, vararg transitionOptions: Pair<View, String>) {

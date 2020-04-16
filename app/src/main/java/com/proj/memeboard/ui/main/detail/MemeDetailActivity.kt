@@ -19,8 +19,10 @@ import com.proj.memeboard.util.MemeSharer
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import kotlinx.android.synthetic.main.activity_meme_detail.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
@@ -44,6 +46,7 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
                 putExtra("isFavorite", meme.isFavorite)
                 putExtra("createdDate", meme.createdDate)
                 putExtra("photoUrl", meme.photoUrl)
+                putExtra("author", meme.author)
             }
         }
     }
@@ -92,16 +95,7 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
             val favBtn = it.findViewById<CheckBox>(R.id.favoriteButton)
             favBtn.isChecked = !favBtn.isChecked
 
-            val updatedMeme = Meme(
-                meme.id,
-                meme.title,
-                meme.description,
-                favBtn.isChecked,
-                meme.createdDate,
-                meme.photoUrl,
-                meme.author
-            )
-            viewModel.toggleFavorite(updatedMeme)
+            viewModel.toggleFavorite(meme)
         }
     }
 

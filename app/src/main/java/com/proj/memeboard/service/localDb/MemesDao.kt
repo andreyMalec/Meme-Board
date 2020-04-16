@@ -1,23 +1,23 @@
 package com.proj.memeboard.service.localDb
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
 import androidx.room.Update
 import com.proj.memeboard.domain.Meme
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MemesDao {
     @Query("SELECT * FROM Meme")
-    fun getAll(): LiveData<List<Meme>>
+    fun getAll(): Flow<List<Meme>>
 
     @Query("SELECT * FROM Meme WHERE title LIKE :searchQuery")
-    fun getTitleContains(searchQuery: String): LiveData<List<Meme>>
+    fun getTitleContains(searchQuery: String): Flow<List<Meme>>
 
     @Query("SELECT * FROM Meme WHERE author LIKE :author")
-    fun getCreatedBy(author: String): LiveData<List<Meme>>
+    fun getCreatedBy(author: String): Flow<List<Meme>>
 
     @Insert(onConflict = IGNORE)
     fun insert(meme: Meme)

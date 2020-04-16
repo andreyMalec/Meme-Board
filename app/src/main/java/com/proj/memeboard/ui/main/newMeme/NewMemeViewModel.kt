@@ -4,15 +4,18 @@ import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.localStorage.userStorage.UserStorage
 import com.proj.memeboard.service.localDb.repo.DbRepo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class NewMemeViewModel @Inject constructor(
     private val context: Context,
     private val userStorage: UserStorage,
@@ -25,7 +28,7 @@ class NewMemeViewModel @Inject constructor(
     val canCreate = MutableLiveData(false)
 
     private fun addMeme(meme: Meme) {
-        dbRepo.createMeme(meme)
+        dbRepo.createMeme(viewModelScope, meme)
     }
 
     fun checkCanCreate() {
