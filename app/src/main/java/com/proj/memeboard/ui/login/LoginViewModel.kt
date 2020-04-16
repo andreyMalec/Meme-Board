@@ -2,10 +2,13 @@ package com.proj.memeboard.ui.login
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.proj.memeboard.domain.User
 import com.proj.memeboard.localStorage.userStorage.UserStorage
+import com.proj.memeboard.service.network.Result
 import com.proj.memeboard.service.network.repo.authRepo.AuthRepo
 import com.proj.memeboard.service.network.request.LoginRequest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
@@ -27,13 +30,14 @@ class LoginViewModel @Inject constructor(
         if (hasInputErrors()) return
 
         isLoading.value = true
-        authRepo.login(request) { user ->
+        viewModelScope.launch {
+            val userResult = authRepo.login(request)
             isLoadError.value =
-                user.getOrNull()?.let {
-                    saveUserData(it)
+                if (userResult is Result.Success) {
+                    saveUserData(userResult.value)
                     isUserAuthorized.value = true
                     false
-                } ?: true
+                } else true
 
             isLoading.value = false
         }

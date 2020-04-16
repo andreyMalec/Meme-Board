@@ -1,15 +1,13 @@
 package com.proj.memeboard.service.network.repo.memeRepo
 
 import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.service.network.RetrofitCallback
+import com.proj.memeboard.service.network.Result
 import com.proj.memeboard.service.network.api.memeApi.MemeApi
-import com.proj.memeboard.service.network.response.MemeResponse
+import com.proj.memeboard.service.network.apiCall
+import kotlinx.coroutines.Dispatchers
 
 class MemeRepo(private val api: MemeApi) {
-    fun getMemes(onDataReceived: (data: Result<List<Meme>>) -> Unit) {
-        api.getMemes().enqueue(RetrofitCallback<List<MemeResponse>>(
-            { data -> onDataReceived(Result.success(data.map { it.convert() })) },
-            { error -> onDataReceived(Result.failure(error)) }
-        ))
+    suspend fun getMemes(): Result<List<Meme>> {
+        return apiCall(Dispatchers.IO) { api.getMemes().map { it.convert() } }
     }
 }

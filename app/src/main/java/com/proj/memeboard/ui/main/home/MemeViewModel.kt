@@ -3,9 +3,12 @@ package com.proj.memeboard.ui.main.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.service.localDb.repo.DbRepo
+import com.proj.memeboard.service.network.Result
 import com.proj.memeboard.service.network.repo.memeRepo.MemeRepo
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MemeViewModel @Inject constructor(
@@ -36,12 +39,13 @@ class MemeViewModel @Inject constructor(
     private fun loadMemes() {
         isLoading.value = true
 
-        memeRepo.getMemes { memes ->
+        viewModelScope.launch {
+            val userResult = memeRepo.getMemes()
             isLoadError.value =
-                memes.getOrNull()?.let {
-                    dbRepo.cacheMemes(it)
+                if (userResult is Result.Success) {
+                    dbRepo.cacheMemes(userResult.value)
                     false
-                } ?: true
+                } else true
 
             isLoading.value = false
         }

@@ -2,14 +2,13 @@ package com.proj.memeboard.service.network.api.authApi
 
 import com.proj.memeboard.service.network.request.LoginRequest
 import com.proj.memeboard.service.network.response.LoginResponse
-import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface AuthApi {
     @POST("auth/login")
-    fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
+    suspend fun login(@Body loginRequest: LoginRequest): LoginResponse
 
     @POST("/auth/logout")
-    fun logout(): Call<Boolean>
+    suspend fun logout(): Nothing
 }
