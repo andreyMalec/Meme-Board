@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil.setContentView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.proj.memeboard.R
 import com.proj.memeboard.databinding.ActivityMemeDetailBinding
@@ -36,6 +37,7 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
 
     private lateinit var meme: Meme
     private lateinit var binding: ActivityMemeDetailBinding
+    private lateinit var deleteButton: MenuItem
 
     companion object {
         fun getExtraIntent(context: Context, meme: Meme): Intent {
@@ -55,6 +57,10 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.meme_detail_menu, menu)
+        menu?.let {
+            deleteButton = it.findItem(R.id.deleteButton)
+            viewModel.setDeleteVisibility(meme)
+        }
         return true
     }
 
@@ -62,6 +68,10 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
         when (item?.itemId) {
             android.R.id.home -> supportFinishAfterTransition()
             R.id.shareButton -> MemeSharer(this).send(meme)
+            R.id.deleteButton -> {
+                viewModel.deleteMeme(meme)
+                supportFinishAfterTransition()
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -74,8 +84,17 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
         binding = setContentView(this, R.layout.activity_meme_detail)
         binding.meme = meme
 
+        initViewModelListener()
         initToolBar()
         initFavoriteListener()
+    }
+
+    private fun initViewModelListener() {
+        viewModel.isDeleteVisible.observe(this, Observer { visibility ->
+            if (this::deleteButton.isInitialized) {
+                deleteButton.isVisible = visibility
+            }
+        })
     }
 
     private fun initToolBar() {

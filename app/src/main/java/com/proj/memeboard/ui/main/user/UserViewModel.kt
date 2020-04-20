@@ -4,11 +4,11 @@ import androidx.lifecycle.*
 import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.localStorage.userStorage.UserStorage
 import com.proj.memeboard.service.localDb.repo.DbRepo
+import com.proj.memeboard.service.network.Result
 import com.proj.memeboard.service.network.repo.authRepo.AuthRepo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.proj.memeboard.service.network.Result
 
 @ExperimentalCoroutinesApi
 class UserViewModel @Inject constructor(
@@ -19,7 +19,7 @@ class UserViewModel @Inject constructor(
 
     val memes: LiveData<List<Meme>>?
     val userName = MutableLiveData<String>()
-    val userDesc =  MutableLiveData<String>()
+    val userDesc = MutableLiveData<String>()
     val isLoading = MutableLiveData(true)
     val isLoadError = MutableLiveData(false)
     val isLogout = MutableLiveData(false)

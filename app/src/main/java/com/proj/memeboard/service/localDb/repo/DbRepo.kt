@@ -2,8 +2,11 @@ package com.proj.memeboard.service.localDb.repo
 
 import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.service.localDb.MemesDao
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 class DbRepo(private val dao: MemesDao) {
@@ -31,6 +34,12 @@ class DbRepo(private val dao: MemesDao) {
     fun createMeme(scope: CoroutineScope, meme: Meme) {
         scope.launch(Dispatchers.IO) {
             dao.insert(meme)
+        }
+    }
+
+    fun deleteMeme(scope: CoroutineScope, meme: Meme) {
+        scope.launch(Dispatchers.IO) {
+            dao.deleteById(meme.id)
         }
     }
 }

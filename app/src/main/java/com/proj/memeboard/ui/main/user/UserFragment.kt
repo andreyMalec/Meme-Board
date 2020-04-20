@@ -54,7 +54,7 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.about -> {
                 true
             }

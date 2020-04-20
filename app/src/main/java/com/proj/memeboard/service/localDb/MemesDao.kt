@@ -30,4 +30,7 @@ interface MemesDao {
 
     @Query("DELETE from Meme")
     fun deleteAll()
+
+    @Query("DELETE from Meme WHERE id = :id")
+    fun deleteById(id: Long)
 }

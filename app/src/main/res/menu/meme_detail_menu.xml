@@ -7,4 +7,11 @@
         android:icon="@drawable/share_icon"
         android:title=""
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/deleteButton"
+        android:icon="@drawable/delete_icon"
+        android:title="@string/delete_text"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
 </menu>

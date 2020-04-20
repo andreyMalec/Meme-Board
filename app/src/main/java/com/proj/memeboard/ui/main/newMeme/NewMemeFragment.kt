@@ -2,6 +2,7 @@ package com.proj.memeboard.ui.main.newMeme
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -9,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -186,6 +188,7 @@ class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener, Injec
             viewModel.createMeme()
             showMemeCreated()
             clearInput()
+            hideKeyboard()
             false
         }
 
@@ -205,5 +208,10 @@ class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener, Injec
 
         titleInput.clearFocus()
         descriptionInput.clearFocus()
+    }
+
+    private fun hideKeyboard() {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm?.hideSoftInputFromWindow(titleInput.windowToken, 0)
     }
 }
