@@ -1,35 +1,34 @@
 package com.proj.memeboard.ui.main.newMeme
 
-import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.proj.memeboard.localDb.MemeData
-import com.proj.memeboard.localDb.MemesDatabase
-import com.proj.memeboard.localStorage.LocalStorageProvider
-import com.proj.memeboard.localStorage.UserPreferences
-import com.proj.memeboard.localStorage.get
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.proj.memeboard.domain.Meme
+import com.proj.memeboard.localStorage.userStorage.UserStorage
+import com.proj.memeboard.service.localDb.repo.DbRepo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import javax.inject.Inject
 
-class NewMemeViewModel(private val app: Application) : AndroidViewModel(app) {
-    private val dao = MemesDatabase.getInstance(app)!!.memesDataDao()
-    private val localStorage = LocalStorageProvider.create(app, UserPreferences.USER_PREFERENCES.key)
+@ExperimentalCoroutinesApi
+class NewMemeViewModel @Inject constructor(
+    private val context: Context,
+    private val userStorage: UserStorage,
+    private val dbRepo: DbRepo
+) : ViewModel() {
 
     val memeImage = MutableLiveData<Bitmap>(null)
     val title = MutableLiveData("")
     val description = MutableLiveData("")
     val canCreate = MutableLiveData(false)
 
-    private fun addMeme(meme: MemeData) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.insert(meme)
-        }
+    private fun addMeme(meme: Meme) {
+        dbRepo.createMeme(viewModelScope, meme)
     }
 
     fun checkCanCreate() {
@@ -39,18 +38,18 @@ class NewMemeViewModel(private val app: Application) : AndroidViewModel(app) {
     fun createMeme() {
         val time = Calendar.getInstance().time.time
 
-        val memeImageFile = File(app.cacheDir, "meme$time.jpg")
+        val memeImageFile = File(context.cacheDir, "meme$time.jpg")
         memeImageFile.createNewFile()
 
         saveMemeImage(memeImageFile)
 
-        val userName: String = localStorage[UserPreferences.USER_NAME.key]
-        val userFirstName: String = localStorage[UserPreferences.FIRST_NAME.key]
-        val userLastName: String = localStorage[UserPreferences.LAST_NAME.key]
-        val author =  "${userName}_${userFirstName}_${userLastName}"
+        val userName: String = userStorage.getUserName()
+        val userFirstName: String = userStorage.getFirstName()
+        val userLastName: String = userStorage.getLastName()
+        val author = "${userName}_${userFirstName}_${userLastName}"
 
         addMeme(
-            MemeData(
+            Meme(
                 id = time,
                 title = title.value,
                 description = description.value,

@@ -1,36 +1,33 @@
 package com.proj.memeboard.ui.main.home
 
-import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
-import com.proj.memeboard.localDb.MemeData
-import com.proj.memeboard.localStorage.LocalStorageProvider
-import com.proj.memeboard.localStorage.UserPreferences
-import com.proj.memeboard.localStorage.get
-import com.proj.memeboard.model.memeRepo.MemeRepoProvider
-import kotlinx.coroutines.Dispatchers
+import androidx.lifecycle.*
+import com.proj.memeboard.domain.Meme
+import com.proj.memeboard.service.localDb.repo.DbRepo
+import com.proj.memeboard.service.network.Result
+import com.proj.memeboard.service.network.repo.memeRepo.MemeRepo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MemeViewModel(app: Application) : BaseMemeViewModel(app) {
-    private val localStorage = LocalStorageProvider.create(app, UserPreferences.USER_PREFERENCES.key)
-    private val repo = MemeRepoProvider.create(localStorage[UserPreferences.TOKEN.key])
+@ExperimentalCoroutinesApi
+class MemeViewModel @Inject constructor(
+    private val dbRepo: DbRepo,
+    private val memeRepo: MemeRepo
+) : ViewModel() {
 
-    val memes: LiveData<List<MemeData>>
+    val memes: LiveData<List<Meme>>
     val searchQuery = MutableLiveData<String>(null)
     val isLoading = MutableLiveData(false)
-    val loadError = MutableLiveData(false)
+    val isLoadError = MutableLiveData(false)
 
     init {
-        memes = Transformations.switchMap(searchQuery) {
-            if (it.isNullOrBlank()) {
-                dao.getAllLiveData()
-            } else {
-                val formattedQuery = "%" + it.trim().toLowerCase() + "%"
-                dao.getMemesTitleContains(formattedQuery)
-            }
-        }
+        memes = searchQuery.asFlow().flatMapLatest { query ->
+            if (query.isNullOrBlank())
+                dbRepo.getAll()
+            else
+                dbRepo.getTitleContains(query)
+        }.asLiveData()
 
         loadMemes()
     }
@@ -40,20 +37,29 @@ class MemeViewModel(app: Application) : BaseMemeViewModel(app) {
         loadMemes()
     }
 
+    fun toggleFavorite(meme: Meme) {
+        val updatedMeme = Meme(
+            meme.id,
+            meme.title,
+            meme.description,
+            !meme.isFavorite,
+            meme.createdDate,
+            meme.photoUrl,
+            meme.author
+        )
+        dbRepo.toggleFavorite(viewModelScope, updatedMeme)
+    }
+
     private fun loadMemes() {
         isLoading.value = true
 
-        repo.getMemes { memesResult ->
-            loadError.value =
-                if (memesResult.isSuccess) {
-                    memesResult.getOrNull()?.let { memes ->
-                        viewModelScope.launch(Dispatchers.IO) {
-                            dao.insertAll(memes.map { it.convert() })
-                        }
-                        false
-                    } ?: true
-                } else
-                    true
+        viewModelScope.launch {
+            val userResult = memeRepo.getMemes()
+            isLoadError.value =
+                if (userResult is Result.Success) {
+                    dbRepo.cacheMemes(this, userResult.value)
+                    false
+                } else true
 
             isLoading.value = false
         }

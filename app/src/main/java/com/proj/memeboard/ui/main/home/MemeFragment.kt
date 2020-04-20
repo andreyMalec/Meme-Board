@@ -9,19 +9,30 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
-import com.proj.memeboard.localDb.MemeData
-import com.proj.memeboard.ui.main.home.detail.MemeDetailActivity
+import com.proj.memeboard.di.Injectable
+import com.proj.memeboard.domain.Meme
+import com.proj.memeboard.ui.main.detail.MemeDetailActivity
 import com.proj.memeboard.util.MemeSharer
 import kotlinx.android.synthetic.main.fragment_meme.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
-class MemeFragment : Fragment(), MemeAdapter.MemeAction {
-    private lateinit var viewModel: MemeViewModel
+@ExperimentalCoroutinesApi
+class MemeFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: MemeViewModel by viewModels {
+        viewModelFactory
+    }
+
     private lateinit var searchView: SearchView
     private val adapter = MemeAdapter(this)
 
@@ -61,8 +72,6 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(MemeViewModel::class.java)
-
         setViewModelListeners()
         initToolBar()
 
@@ -80,7 +89,7 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction {
             else hideProgress()
         })
 
-        viewModel.loadError.observe(viewLifecycleOwner, Observer { error ->
+        viewModel.isLoadError.observe(viewLifecycleOwner, Observer { error ->
             if (error) showLoadError()
         })
     }
@@ -132,33 +141,18 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction {
         (memeRecycler.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
-    override fun onMemeShareClick(meme: MemeData?) {
-        meme?.let { MemeSharer(context!!).send(it) }
+    override fun onMemeShareClick(meme: Meme) {
+        MemeSharer(requireContext()).send(meme)
     }
 
-    override fun onMemeFavoriteClick(meme: MemeData?, isFavorite: Boolean) {
-        meme?.let {
-            val updatedMeme = MemeData(
-                it.id,
-                it.title,
-                it.description,
-                isFavorite,
-                it.createdDate,
-                it.photoUrl,
-                it.author
-            )
-            viewModel.updateMeme(updatedMeme)
-        }
+    override fun onMemeFavoriteClick(meme: Meme) {
+        viewModel.toggleFavorite(meme)
     }
 
-    override fun onMemeDetailClick(meme: MemeData?, imageView: View, titleView: View, favoriteView: View) {
-        meme?.let {
-            val intent = MemeDetailActivity.getExtraIntent(requireContext(), it)
-
-            val p1 = Pair(imageView, "image")
-            val p2 = Pair(titleView, "title")
-            val p3 = Pair(favoriteView, "favorite")
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!, p1, p2, p3)
+    override fun onMemeDetailClick(meme: Meme, vararg transitionOptions: Pair<View, String>) {
+        activity?.let {
+            val intent = MemeDetailActivity.getExtraIntent(requireContext(), meme)
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(it, *transitionOptions)
 
             startActivity(intent, options.toBundle())
         }

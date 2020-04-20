@@ -8,18 +8,15 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.proj.memeboard.ui.main.home.MemeFragment"
-        android:label="@string/title_activity_main"
         tools:layout="@layout/fragment_meme" />
 
     <fragment
         android:id="@+id/navigation_new_meme"
         android:name="com.proj.memeboard.ui.main.newMeme.NewMemeFragment"
-        android:label="@string/title_new_meme"
         tools:layout="@layout/fragment_new_meme" />
 
     <fragment
         android:id="@+id/navigation_user"
         android:name="com.proj.memeboard.ui.main.user.UserFragment"
-        android:label="@string/title_user"
         tools:layout="@layout/fragment_user" />
 </navigation>

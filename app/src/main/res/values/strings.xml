@@ -20,6 +20,8 @@
     <string name="date_yesterday">Yesterday</string>
     <string name="date_n_days_ago">%1$d days ago</string>
     <string name="search_hint">Search…</string>
+    <string name="delete_text">Delete meme</string>
+    <string name="deleted_text">Meme deleted</string>
 
     <string name="new_meme_title_hint">Title</string>
     <string name="new_meme_description_hint">Description</string>
@@ -31,4 +33,10 @@
     </string-array>
     <string name="attach_text">Select image source</string>
     <string name="new_meme_created">New meme created</string>
+
+    <string name="logout_text">Logout</string>
+    <string name="about_text">About</string>
+    <string name="logout_dialog_title">Do you really want to log out?</string>
+    <string name="logout_dialog_ok">Logout</string>
+    <string name="logout_dialog_cancel">Cancel</string>
 </resources>
