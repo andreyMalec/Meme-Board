@@ -2,8 +2,8 @@ package com.proj.memeboard.di.module
 
 import android.content.Context
 import androidx.room.Room
+import com.proj.memeboard.service.localDb.MemesDao
 import com.proj.memeboard.service.localDb.MemesDatabase
-import com.proj.memeboard.service.localDb.repo.DbRepo
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,7 +18,7 @@ class DbModule {
     @Singleton
     fun instance(context: Context): MemesDatabase {
         if (this::database.isInitialized.not()) {
-            synchronized(DbModule::class) {
+            synchronized(this) {
                 database = Room.databaseBuilder(
                     context.applicationContext,
                     MemesDatabase::class.java, "memesDb"
@@ -30,5 +30,6 @@ class DbModule {
 
     @Provides
     @Singleton
-    fun dbRepo(context: Context): DbRepo = DbRepo(instance(context).memesDataDao())
+    fun memesDao(context: Context): MemesDao =
+        instance(context).memesDataDao()
 }

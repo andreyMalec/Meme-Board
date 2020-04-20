@@ -2,61 +2,59 @@ package com.proj.memeboard.ui.main.user
 
 import androidx.lifecycle.*
 import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.localStorage.userStorage.UserStorage
-import com.proj.memeboard.service.localDb.repo.DbRepo
+import com.proj.memeboard.repo.MemeRepo
+import com.proj.memeboard.repo.UserRepo
 import com.proj.memeboard.service.network.Result
-import com.proj.memeboard.service.network.repo.authRepo.AuthRepo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class UserViewModel @Inject constructor(
-    private val userStorage: UserStorage,
-    private val dbRepo: DbRepo,
-    private val authRepo: AuthRepo
+    private val memeRepo: MemeRepo,
+    private val userRepo: UserRepo
 ) : ViewModel() {
 
-    val memes: LiveData<List<Meme>>?
-    val userName = MutableLiveData<String>()
-    val userDesc = MutableLiveData<String>()
-    val isLoading = MutableLiveData(true)
-    val isLoadError = MutableLiveData(false)
-    val isLogout = MutableLiveData(false)
+    val memes: LiveData<List<Meme>>
+
+    private val _userName = MutableLiveData<String>()
+    val userName: LiveData<String>
+        get() = _userName
+
+    private val _userDesc = MutableLiveData<String>()
+    val userDesc: LiveData<String>
+        get() = _userDesc
+
+    private val _isLoading = MutableLiveData(true)
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
+
+    private val _isLogout = MutableLiveData(false)
+    val isLogout: LiveData<Boolean>
+        get() = _isLogout
 
     init {
-        val user = userStorage.getUser()
-        val author = "${user.userName}_${user.firstName}_${user.lastName}"
-        memes = dbRepo.getCreatedBy(author).asLiveData()
+        val user = userRepo.getUser()
+        memes = memeRepo.getCreatedBy(user.id).asLiveData()
 
-        userName.value = user.firstName
-        userDesc.value = user.userDescription
+        _userName.value = user.firstName
+        _userDesc.value = user.userDescription
+
+        _isLoading.value = false
     }
 
     fun logout() {
-        isLoading.value = true
+        _isLoading.value = true
         viewModelScope.launch {
-            val result = authRepo.logout()
-            isLogout.value =
-                if (result is Result.Failure && result.code == 204) {
-                    userStorage.clear()
-                    true
-                } else false
-
-            isLoading.value = false
+            val result = userRepo.logout()
+            _isLogout.value = result is Result.Success
+            _isLoading.value = false
         }
     }
 
     fun toggleFavorite(meme: Meme) {
-        val updatedMeme = Meme(
-            meme.id,
-            meme.title,
-            meme.description,
-            !meme.isFavorite,
-            meme.createdDate,
-            meme.photoUrl,
-            meme.author
-        )
-        dbRepo.toggleFavorite(viewModelScope, updatedMeme)
+        viewModelScope.launch {
+            memeRepo.toggleFavorite(meme)
+        }
     }
 }

@@ -4,8 +4,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.proj.memeboard.service.network.api.authApi.AuthApi
 import com.proj.memeboard.service.network.api.memeApi.MemeApi
-import com.proj.memeboard.service.network.repo.authRepo.AuthRepo
-import com.proj.memeboard.service.network.repo.memeRepo.MemeRepo
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -15,14 +13,6 @@ import javax.inject.Singleton
 
 @Module(includes = [OkHttpClientModule::class])
 class NetworkModule {
-    @Provides
-    @Singleton
-    fun memeRepo(api: MemeApi): MemeRepo = MemeRepo(api)
-
-    @Provides
-    @Singleton
-    fun authRepo(api: AuthApi): AuthRepo = AuthRepo(api)
-
     @Provides
     @Singleton
     fun memeApi(retrofit: Retrofit): MemeApi = retrofit.create(MemeApi::class.java)

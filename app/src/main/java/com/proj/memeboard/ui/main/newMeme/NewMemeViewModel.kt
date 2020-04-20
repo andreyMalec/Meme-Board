@@ -2,76 +2,49 @@ package com.proj.memeboard.ui.main.newMeme
 
 import android.content.Context
 import android.graphics.Bitmap
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.localStorage.userStorage.UserStorage
-import com.proj.memeboard.service.localDb.repo.DbRepo
+import com.proj.memeboard.repo.MemeRepo
+import com.proj.memeboard.repo.UserRepo
+import com.proj.memeboard.util.MemeCreator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.util.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class NewMemeViewModel @Inject constructor(
     private val context: Context,
-    private val userStorage: UserStorage,
-    private val dbRepo: DbRepo
+    private val userRepo: UserRepo,
+    private val memeRepo: MemeRepo
 ) : ViewModel() {
 
-    val memeImage = MutableLiveData<Bitmap>(null)
+    val image = MutableLiveData<Bitmap>(null)
     val title = MutableLiveData("")
     val description = MutableLiveData("")
-    val canCreate = MutableLiveData(false)
 
-    private fun addMeme(meme: Meme) {
-        dbRepo.createMeme(viewModelScope, meme)
-    }
+    private val _canCreate = MutableLiveData(false)
+    val canCreate: LiveData<Boolean>
+        get() = _canCreate
 
     fun checkCanCreate() {
-        canCreate.value = !title.value.isNullOrBlank() && memeImage.value != null
+        _canCreate.value = !title.value.isNullOrBlank() && image.value != null
     }
 
     fun createMeme() {
-        val time = Calendar.getInstance().time.time
+        if (_canCreate.value == true) {
+            viewModelScope.launch {
+                val newMeme = MemeCreator(context, userRepo.getUser().id).create(
+                    title.value!!,//мы уже проверили
+                    description.value,
+                    image.value!!
+                )
+                memeRepo.createMeme(newMeme)
+            }
 
-        val memeImageFile = File(context.cacheDir, "meme$time.jpg")
-        memeImageFile.createNewFile()
-
-        saveMemeImage(memeImageFile)
-
-        val userName: String = userStorage.getUserName()
-        val userFirstName: String = userStorage.getFirstName()
-        val userLastName: String = userStorage.getLastName()
-        val author = "${userName}_${userFirstName}_${userLastName}"
-
-        addMeme(
-            Meme(
-                id = time,
-                title = title.value,
-                description = description.value,
-                isFavorite = true,
-                createdDate = time / 1000,
-                photoUrl = memeImageFile.absolutePath,
-                author = author
-            )
-        )
-
-        memeImage.value = null
-        title.value = null
-    }
-
-    private fun saveMemeImage(memeImageFile: File) {
-        val bos = ByteArrayOutputStream()
-        memeImage.value?.compress(Bitmap.CompressFormat.JPEG, 100, bos)
-        val bitmapData = bos.toByteArray()
-
-        FileOutputStream(memeImageFile).apply {
-            write(bitmapData)
-            flush()
+            image.value = null
+            title.value = null
         }
     }
 

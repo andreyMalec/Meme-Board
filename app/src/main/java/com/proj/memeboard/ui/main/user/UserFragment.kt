@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
 import com.proj.memeboard.di.Injectable
 import com.proj.memeboard.domain.Meme
@@ -40,8 +39,6 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
     }
 
     private val adapter = MemeAdapter(this)
-
-    private var firstLoad = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_user, container, false)
@@ -89,21 +86,13 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
     }
 
     private fun setViewModelListeners() {
-        viewModel.memes?.observe(viewLifecycleOwner, Observer { memes ->
+        viewModel.memes.observe(viewLifecycleOwner, Observer { memes ->
             adapter.submitList(memes)
-            if (firstLoad) {
-                viewModel.isLoading.value = false
-                firstLoad = false
-            }
         })
 
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { loading ->
             if (loading) showProgress()
             else hideProgress()
-        })
-
-        viewModel.isLoadError.observe(viewLifecycleOwner, Observer { error ->
-            if (error) showLoadError()
         })
 
         viewModel.userName.observe(viewLifecycleOwner, Observer { name ->
@@ -127,16 +116,6 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
 
     private fun hideProgress() {
         progressBar.visibility = View.GONE
-    }
-
-    private fun showLoadError() {
-        if (adapter.currentList.isEmpty())
-            errorText.visibility = View.VISIBLE
-
-        val snackbar = Snackbar.make(root, getString(R.string.memes_load_error), Snackbar.LENGTH_LONG)
-        snackbar.anchorView = activity?.findViewById(R.id.bottom_nav_view)
-        snackbar.setBackgroundTint(ContextCompat.getColor(this.requireContext(), R.color.colorError))
-        snackbar.show()
     }
 
     private fun startMemeActivity() {

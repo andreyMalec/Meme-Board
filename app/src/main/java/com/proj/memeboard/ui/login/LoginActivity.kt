@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
-import com.proj.memeboard.service.network.request.LoginRequest
 import com.proj.memeboard.ui.main.MainActivity
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -125,7 +124,7 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
         val login = loginEditText.text.toString()
         val pass = passEditText.text.toString()
 
-        viewModel.authorizeUser(LoginRequest(login, pass))
+        viewModel.authorizeUser(login, pass)
     }
 
     private fun setProgressBarColor() {

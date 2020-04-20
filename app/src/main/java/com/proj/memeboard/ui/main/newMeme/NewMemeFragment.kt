@@ -76,7 +76,7 @@ class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener, Injec
     }
 
     private fun initViewModelListeners() {
-        viewModel.memeImage.observe(viewLifecycleOwner, Observer { image ->
+        viewModel.image.observe(viewLifecycleOwner, Observer { image ->
             if (image != null) {
                 Glide.with(this).load(image).into(imageView)
                 clearImageButton.visibility = View.VISIBLE
@@ -110,7 +110,7 @@ class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener, Injec
         }
 
         clearImageButton.setOnClickListener {
-            viewModel.memeImage.value = null
+            viewModel.image.value = null
         }
     }
 
@@ -155,7 +155,7 @@ class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener, Injec
             else -> null
         }
 
-        viewModel.memeImage.value = fixBitmap
+        viewModel.image.value = fixBitmap
     }
 
     override fun onDialogFinish(result: DialogResult) {

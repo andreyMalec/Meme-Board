@@ -35,7 +35,6 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
         viewModelFactory
     }
 
-    private lateinit var meme: Meme
     private lateinit var binding: ActivityMemeDetailBinding
     private lateinit var deleteButton: MenuItem
 
@@ -59,7 +58,7 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
         menuInflater.inflate(R.menu.meme_detail_menu, menu)
         menu?.let {
             deleteButton = it.findItem(R.id.deleteButton)
-            viewModel.setDeleteVisibility(meme)
+            viewModel.setDeleteVisibility()
         }
         return true
     }
@@ -67,9 +66,11 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> supportFinishAfterTransition()
-            R.id.shareButton -> MemeSharer(this).send(meme)
+            R.id.shareButton -> viewModel.currentMeme.value?.let {
+                MemeSharer(this).send(it)
+            }
             R.id.deleteButton -> {
-                viewModel.deleteMeme(meme)
+                viewModel.deleteMeme()
                 supportFinishAfterTransition()
             }
         }
@@ -80,9 +81,9 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        meme = getExtraMeme()
+        viewModel.currentMeme.value = getExtraMeme()
         binding = setContentView(this, R.layout.activity_meme_detail)
-        binding.meme = meme
+        binding.meme = viewModel.currentMeme.value
 
         initViewModelListener()
         initToolBar()
@@ -106,7 +107,7 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
         )
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = meme.title
+        supportActionBar?.title = viewModel.currentMeme.value?.title
     }
 
     private fun initFavoriteListener() {
@@ -114,7 +115,7 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
             val favBtn = it.findViewById<CheckBox>(R.id.favoriteButton)
             favBtn.isChecked = !favBtn.isChecked
 
-            viewModel.toggleFavorite(meme)
+            viewModel.toggleFavorite()
         }
     }
 
@@ -127,7 +128,7 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
             intent.getBooleanExtra("isFavorite", false),
             intent.getLongExtra("createdDate", 0),
             intent.getStringExtra("photoUrl"),
-            intent.getStringExtra("author")
+            intent.getLongExtra("author", 0)
         )
     }
 }
