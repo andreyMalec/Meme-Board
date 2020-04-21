@@ -1,6 +1,8 @@
 package com.proj.memeboard.ui.main
 
 import android.os.Bundle
+import android.os.Handler
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -91,5 +93,18 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     override fun onResume() {
         super.onResume()
         navHolder.setNavigator(navigator)
+    }
+
+    private var pressAgain = true
+    private val pressAgainAwait = 2000L
+    override fun onBackPressed() {
+        if (pressAgain) {
+            pressAgain = false
+            Toast.makeText(this, getString(R.string.pressAgainExit), Toast.LENGTH_SHORT).show()
+            Handler().postDelayed({ pressAgain = true }, pressAgainAwait)
+            return
+        }
+
+        super.onBackPressed()
     }
 }
