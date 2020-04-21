@@ -16,8 +16,8 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
 
-        versionCode 26
-        versionName "0.5.6"
+        versionCode 27
+        versionName "0.6.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -58,6 +58,7 @@ dependencies {
     kapt 'com.google.dagger:dagger-android-processor:2.20'
     kapt 'com.google.dagger:dagger-compiler:2.20'
 
+    implementation 'ru.terrakok.cicerone:cicerone:5.1.0'
     implementation 'com.google.dagger:dagger-android:2.20'
     implementation 'com.google.dagger:dagger-android-support:2.20'
     implementation 'com.github.bumptech.glide:glide:4.11.0'

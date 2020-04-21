@@ -5,14 +5,17 @@ import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.repo.MemeRepo
 import com.proj.memeboard.repo.UserRepo
 import com.proj.memeboard.service.network.Result
+import com.proj.memeboard.ui.Screens
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class UserViewModel @Inject constructor(
     private val memeRepo: MemeRepo,
-    private val userRepo: UserRepo
+    private val userRepo: UserRepo,
+    private val router: Router
 ) : ViewModel() {
 
     val memes: LiveData<List<Meme>>
@@ -29,10 +32,6 @@ class UserViewModel @Inject constructor(
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    private val _isLogout = MutableLiveData(false)
-    val isLogout: LiveData<Boolean>
-        get() = _isLogout
-
     init {
         val user = userRepo.getUser()
         memes = memeRepo.getCreatedBy(user.id).asLiveData()
@@ -47,9 +46,14 @@ class UserViewModel @Inject constructor(
         _isLoading.value = true
         viewModelScope.launch {
             val result = userRepo.logout()
-            _isLogout.value = result is Result.Success
+            if (result is Result.Success)
+                router.newRootScreen(Screens.LoginScreen)
             _isLoading.value = false
         }
+    }
+
+    fun onDetailClick(meme: Meme) {
+        router.navigateTo(Screens.DetailScreen(meme))
     }
 
     fun toggleFavorite(meme: Meme) {

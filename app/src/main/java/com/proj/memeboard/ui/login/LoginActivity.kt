@@ -1,7 +1,6 @@
 package com.proj.memeboard.ui.login
 
 import android.app.Activity
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
@@ -15,10 +14,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
-import com.proj.memeboard.ui.main.MainActivity
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import kotlinx.android.synthetic.main.activity_login.*
+import ru.terrakok.cicerone.NavigatorHolder
+import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity(), HasActivityInjector {
@@ -28,11 +28,24 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var navHolder: NavigatorHolder
+
     val viewModel: LoginViewModel by viewModels {
         viewModelFactory
     }
 
     override fun activityInjector() = dispatchingAndroidInjector
+
+    override fun onPause() {
+        super.onPause()
+        navHolder.removeNavigator()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        navHolder.setNavigator(SupportAppNavigator(this, -1))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,11 +62,6 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
     }
 
     private fun initViewModelListeners() {
-        viewModel.isUserAuthorized.observe(this, Observer { authorized ->
-            if (authorized)
-                startMemeActivity()
-        })
-
         viewModel.isLoading.observe(this, Observer { loading ->
             if (loading) showProgress()
             else hideProgress()
@@ -80,11 +88,6 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
                 }
             }
         })
-    }
-
-    private fun startMemeActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
     }
 
     private fun showLoginError() {

@@ -6,16 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.proj.memeboard.repo.UserRepo
 import com.proj.memeboard.service.network.Result
+import com.proj.memeboard.ui.Screens
 import kotlinx.coroutines.launch
+import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewModel() {
+class LoginViewModel @Inject constructor(private val userRepo: UserRepo, private val router: Router) : ViewModel() {
 
     private val passwordSize = 8
-
-    private val _isUserAuthorized = MutableLiveData(userRepo.isUserAuthorized())
-    val isUserAuthorized: LiveData<Boolean>
-        get() = _isUserAuthorized
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean>
@@ -33,6 +31,15 @@ class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewM
     val passInputError: LiveData<Int>
         get() = _passInputError
 
+    init {
+        if (userRepo.isUserAuthorized())
+            startMainScreen()
+    }
+
+    private fun startMainScreen() {
+        router.newRootScreen(Screens.MainScreen)
+    }
+
     fun authorizeUser(login: String, pass: String) {
         checkInput(login, pass)
 
@@ -42,7 +49,9 @@ class LoginViewModel @Inject constructor(private val userRepo: UserRepo) : ViewM
         viewModelScope.launch {
             val userResult = userRepo.login(login, pass)
             _isLoadError.value = userResult !is Result.Success
-            _isUserAuthorized.value = userRepo.isUserAuthorized()
+
+            if (userRepo.isUserAuthorized())
+                startMainScreen()
 
             _isLoading.value = false
         }

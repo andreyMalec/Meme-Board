@@ -1,7 +1,11 @@
 package com.proj.memeboard.ui.main.newMeme
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.provider.MediaStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +15,7 @@ import com.proj.memeboard.repo.UserRepo
 import com.proj.memeboard.util.MemeCreator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -46,6 +51,22 @@ class NewMemeViewModel @Inject constructor(
             image.value = null
             title.value = null
         }
+    }
+
+    fun getImageFromResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val fixBitmap: Bitmap? = when {
+            resultCode == Activity.RESULT_OK && data != null && requestCode == GALLERY -> {
+                MediaStore.Images.Media.getBitmap(context.contentResolver, data.data)
+            }
+            resultCode == Activity.RESULT_OK && requestCode == CAMERA -> {
+                val newFile = File(context.getExternalFilesDir(null), TEMP_MEME_PATH)
+
+                BitmapFactory.decodeFile(newFile.path)
+            }
+            else -> null
+        }
+
+        image.value = fixBitmap
     }
 
     companion object {

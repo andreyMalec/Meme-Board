@@ -3,6 +3,7 @@ package com.proj.memeboard.di.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.proj.memeboard.ui.login.LoginViewModel
+import com.proj.memeboard.ui.main.MainViewModel
 import com.proj.memeboard.ui.main.detail.MemeDetailViewModel
 import com.proj.memeboard.ui.main.home.MemeViewModel
 import com.proj.memeboard.ui.main.newMeme.NewMemeViewModel
@@ -15,6 +16,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Module
 @ExperimentalCoroutinesApi
 abstract class ViewModelModule {
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainViewModel::class)
+    abstract fun mainViewModel(viewModel: MainViewModel): ViewModel
+
     @Binds
     @IntoMap
     @ViewModelKey(LoginViewModel::class)

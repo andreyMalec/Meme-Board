@@ -1,24 +1,43 @@
 package com.proj.memeboard.ui.main
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.lifecycle.ViewModelProvider
 import com.proj.memeboard.R
+import com.proj.memeboard.ui.Screens
+import com.proj.memeboard.ui.main.navigation.BottomNavigator
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var navHolder: NavigatorHolder
+
+    val viewModel: MainViewModel by viewModels {
+        viewModelFactory
+    }
+
     override fun supportFragmentInjector() = dispatchingAndroidInjector
+
+    private val navigator = BottomNavigator(
+        this,
+        supportFragmentManager,
+        R.id.nav_host_fragment
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +45,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         initToolBar()
         initBottomNavigation()
+        viewModel.init()
     }
 
     private fun initToolBar() {
@@ -39,15 +59,37 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     private fun initBottomNavigation() {
-        val navController = findNavController(R.id.nav_host_fragment)
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home,
-                R.id.navigation_new_meme,
-                R.id.navigation_user
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        bottom_nav_view.setupWithNavController(navController)
+        bottom_nav_view.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.navigation_home -> {
+                    viewModel.onHomeClick(); true
+                }
+                R.id.navigation_new_meme -> {
+                    viewModel.onNewClick(); true
+                }
+                R.id.navigation_user -> {
+                    viewModel.onProfileClick(); true
+                }
+                else -> false
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        Screens.HomeScreen.clearFragment()
+        Screens.NewMemeScreen.clearFragment()
+        Screens.ProfileScreen.clearFragment()
+
+        super.onDestroy()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        navHolder.removeNavigator()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        navHolder.setNavigator(navigator)
     }
 }

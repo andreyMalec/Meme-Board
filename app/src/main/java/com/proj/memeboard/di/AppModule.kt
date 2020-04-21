@@ -14,7 +14,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
 @ExperimentalCoroutinesApi
-@Module(includes = [ActivityModule::class, ViewModelModule::class])
+@Module(includes = [ActivityModule::class, ViewModelModule::class, Navigation::class])
 class AppModule {
     @Provides
     @Singleton

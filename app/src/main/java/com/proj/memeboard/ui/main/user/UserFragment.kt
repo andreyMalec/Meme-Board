@@ -1,7 +1,6 @@
 package com.proj.memeboard.ui.main.user
 
 import android.content.DialogInterface
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
@@ -21,18 +20,21 @@ import com.bumptech.glide.request.RequestOptions
 import com.proj.memeboard.R
 import com.proj.memeboard.di.Injectable
 import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.ui.login.LoginActivity
-import com.proj.memeboard.ui.main.detail.MemeDetailActivity
 import com.proj.memeboard.ui.main.home.MemeAdapter
+import com.proj.memeboard.ui.main.navigation.DetailNavigator
 import com.proj.memeboard.util.MemeSharer
 import kotlinx.android.synthetic.main.fragment_user.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var navHolder: NavigatorHolder
 
     private val viewModel: UserViewModel by viewModels {
         viewModelFactory
@@ -102,11 +104,6 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
         viewModel.userDesc.observe(viewLifecycleOwner, Observer { desc ->
             userDesc.text = desc
         })
-
-        viewModel.isLogout.observe(viewLifecycleOwner, Observer { logout ->
-            if (logout)
-                startMemeActivity()
-        })
     }
 
     private fun showProgress() {
@@ -116,11 +113,6 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
 
     private fun hideProgress() {
         progressBar.visibility = View.GONE
-    }
-
-    private fun startMemeActivity() {
-        startActivity(Intent(requireContext(), LoginActivity::class.java))
-        activity?.finish()
     }
 
     private fun initToolBar() {
@@ -159,10 +151,12 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
 
     override fun onMemeDetailClick(meme: Meme, vararg transitionOptions: Pair<View, String>) {
         activity?.let {
-            val intent = MemeDetailActivity.getExtraIntent(requireContext(), meme)
             val options = ActivityOptionsCompat.makeSceneTransitionAnimation(it, *transitionOptions)
+            val navigator = DetailNavigator(it, options.toBundle())
 
-            startActivity(intent, options.toBundle())
+            navHolder.setNavigator(navigator)
         }
+
+        viewModel.onDetailClick(meme)
     }
 }

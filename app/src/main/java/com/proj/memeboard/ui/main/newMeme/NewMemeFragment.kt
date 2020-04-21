@@ -1,12 +1,9 @@
 package com.proj.memeboard.ui.main.newMeme
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
@@ -139,23 +136,7 @@ class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener, Injec
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        getImageFromResult(requestCode, resultCode, data)
-    }
-
-    private fun getImageFromResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val fixBitmap: Bitmap? = when {
-            resultCode == Activity.RESULT_OK && data != null && requestCode == GALLERY -> {
-                MediaStore.Images.Media.getBitmap(requireContext().contentResolver, data.data)
-            }
-            resultCode == Activity.RESULT_OK && requestCode == CAMERA -> {
-                val newFile = File(requireContext().getExternalFilesDir(null), TEMP_MEME_PATH)
-
-                BitmapFactory.decodeFile(newFile.path)
-            }
-            else -> null
-        }
-
-        viewModel.image.value = fixBitmap
+        viewModel.getImageFromResult(requestCode, resultCode, data)
     }
 
     override fun onDialogFinish(result: DialogResult) {

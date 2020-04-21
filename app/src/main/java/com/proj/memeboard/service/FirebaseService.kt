@@ -15,9 +15,12 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
 
         val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            val channel = NotificationChannel(message.notification?.channelId, message.notification?.channelId, NotificationManager.IMPORTANCE_DEFAULT)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                message.notification?.channelId,
+                message.notification?.channelId,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
             channel.description = message.notification?.channelId
             channel.enableVibration(true)
             channel.setShowBadge(true)
