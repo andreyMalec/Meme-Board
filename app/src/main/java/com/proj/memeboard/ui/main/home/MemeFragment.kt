@@ -1,8 +1,8 @@
 package com.proj.memeboard.ui.main.home
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityOptionsCompat
@@ -54,8 +54,8 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
     }
 
     private fun initSearchView() {
-        searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
-            .setImageResource(R.drawable.close)
+        searchView.findViewById<View>(androidx.appcompat.R.id.search_plate)
+            .setBackgroundResource(Color.TRANSPARENT)
         searchView.queryHint = getString(R.string.search_hint)
 
         initSearchViewListener()
@@ -112,10 +112,11 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
         if (adapter.currentList.isEmpty())
             errorText.visibility = View.VISIBLE
 
-        val snackbar = Snackbar.make(root, getString(R.string.memes_load_error), Snackbar.LENGTH_LONG)
-        snackbar.anchorView = activity?.findViewById(R.id.bottom_nav_view)
-        snackbar.setBackgroundTint(ContextCompat.getColor(this.requireContext(), R.color.colorError))
-        snackbar.show()
+        val root = (activity as AppCompatActivity).findViewById<View>(R.id.root)
+        Snackbar.make(root, getString(R.string.memes_load_error), Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this.requireContext(), R.color.colorError))
+            .setTextColor(ContextCompat.getColor(this.requireContext(), R.color.colorWhite))
+            .show()
     }
 
     private fun initToolBar() {

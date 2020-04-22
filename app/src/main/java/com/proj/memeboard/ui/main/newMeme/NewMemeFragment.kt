@@ -177,10 +177,10 @@ class NewMemeFragment : Fragment(), AttachSourceDialog.ListDialogListener, Injec
     }
 
     private fun showMemeCreated() {
-        val snackbar = Snackbar.make(main, getString(R.string.new_meme_created), Snackbar.LENGTH_LONG)
-        snackbar.anchorView = activity?.findViewById(R.id.bottom_nav_view)
-        snackbar.setBackgroundTint(ContextCompat.getColor(this.requireContext(), R.color.colorAccent))
-        snackbar.show()
+        val root = (activity as AppCompatActivity).findViewById<View>(R.id.root)
+        Snackbar.make(root, getString(R.string.new_meme_created), Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(this.requireContext(), R.color.colorAccent))
+            .show()
     }
 
     private fun clearInput() {

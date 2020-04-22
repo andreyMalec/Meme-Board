@@ -13,6 +13,7 @@
     </data>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
@@ -20,6 +21,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="8dp"
         tools:ignore="UnusedAttribute">
 
@@ -29,21 +33,32 @@
             android:background="@color/colorLightBackground"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/image"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitStart"
-                android:transitionName="image"
-                app:imageUrl="@{meme.photoUrl}" />
+                android:transitionName="card"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp">
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitStart"
+                    android:transitionName="image"
+                    app:imageUrl="@{meme.photoUrl}" />
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginRight="10dp"
                 android:maxLines="1"
                 android:text="@{meme.title}"

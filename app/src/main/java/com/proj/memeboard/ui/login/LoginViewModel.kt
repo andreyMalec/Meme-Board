@@ -7,10 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.proj.memeboard.repo.UserRepo
 import com.proj.memeboard.service.network.Result
 import com.proj.memeboard.ui.Screens
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class LoginViewModel @Inject constructor(private val userRepo: UserRepo, private val router: Router) : ViewModel() {
 
     private val passwordSize = 8

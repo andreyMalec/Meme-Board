@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CheckBox
@@ -65,7 +66,10 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            android.R.id.home -> supportFinishAfterTransition()
+            android.R.id.home -> {
+                binding.card.radius = 21f
+                supportFinishAfterTransition()
+            }
             R.id.shareButton -> viewModel.currentMeme.value?.let {
                 MemeSharer(this).send(it)
             }
@@ -78,6 +82,11 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onBackPressed() {
+        binding.card.radius = 21f
+        super.onBackPressed()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -85,9 +94,16 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
         binding = setContentView(this, R.layout.activity_meme_detail)
         binding.meme = viewModel.currentMeme.value
 
+        initTransitionListener()
         initViewModelListener()
         initToolBar()
         initFavoriteListener()
+    }
+
+    private fun initTransitionListener() {
+        Handler().postDelayed({
+            binding.card.radius = 0f
+        }, 250)
     }
 
     private fun initViewModelListener() {

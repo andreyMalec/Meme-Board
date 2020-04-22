@@ -17,10 +17,12 @@ import com.proj.memeboard.R
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class LoginActivity : AppCompatActivity(), HasActivityInjector {
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
@@ -93,6 +95,7 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
     private fun showLoginError() {
         Snackbar.make(root, getString(R.string.login_fail), Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.colorError))
+            .setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
             .show()
     }
 
