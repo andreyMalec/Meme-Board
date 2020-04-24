@@ -13,118 +13,128 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/addImageButton"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardBackgroundColor="@color/colorLight"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="2dp">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:padding="6dp"
-            android:src="@drawable/image_placeholder" />
-    </androidx.cardview.widget.CardView>
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/main"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-8dp"
-                app:boxBackgroundMode="none"
-                app:boxCollapsedPaddingTop="0dp"
-                app:counterEnabled="true"
-                app:counterMaxLength="140"
-                app:counterOverflowTextColor="@color/colorError"
-                app:hintAnimationEnabled="true"
-                app:hintEnabled="false">
+                android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/titleInput"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/new_meme_title_hint"
-                    android:maxLength="141"
-                    android:textColor="@android:color/white"
-                    android:textSize="30sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="-8dp"
+                    app:boxBackgroundMode="none"
+                    app:boxCollapsedPaddingTop="0dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="140"
+                    app:counterOverflowTextColor="@color/colorError"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="false">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="-8dp"
-                app:boxBackgroundMode="none"
-                app:counterEnabled="true"
-                app:counterMaxLength="1000"
-                app:counterOverflowTextColor="@color/colorError"
-                app:hintAnimationEnabled="false"
-                app:hintEnabled="false">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/titleInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/new_meme_title_hint"
+                        android:maxLength="141"
+                        android:textColor="@android:color/white"
+                        android:textSize="30sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/descriptionInput"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="-8dp"
+                    app:boxBackgroundMode="none"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="1000"
+                    app:counterOverflowTextColor="@color/colorError"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/descriptionInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/new_meme_description_hint"
+                        android:maxLength="1001"
+                        android:textColor="@android:color/white" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/new_meme_description_hint"
-                    android:maxLength="1001"
-                    android:textColor="@android:color/white" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp">
-
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitStart" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/clearImageButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="12dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:visibility="gone"
-                    app:cardBackgroundColor="@color/colorShadow"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    app:cardMaxElevation="0dp">
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp">
 
                     <ImageView
+                        android:id="@+id/imageView"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:padding="4dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/close" />
-                </androidx.cardview.widget.CardView>
-            </FrameLayout>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/clearImageButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="top|end"
+                        android:layout_margin="12dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:visibility="gone"
+                        app:cardBackgroundColor="@color/colorShadow"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp"
+                        app:cardMaxElevation="0dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:padding="4dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/close" />
+                    </androidx.cardview.widget.CardView>
+                </FrameLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/addImageButton"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/colorLight"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:src="@drawable/image_placeholder" />
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

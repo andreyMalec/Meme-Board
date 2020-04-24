@@ -66,8 +66,9 @@ class NewMemeActivity : AppCompatActivity(), AttachSourceDialog.ListDialogListen
                 R.color.colorLightBackground
             )
         )
+        toolbar.title = ""
         setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.title_new_meme)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initListeners() {
@@ -163,17 +164,25 @@ class NewMemeActivity : AppCompatActivity(), AttachSourceDialog.ListDialogListen
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> onBackPressed()
+            R.id.createNewMeme -> {
+                viewModel.createMeme()
+                showMemeCreated()
+                clearInput()
+                hideKeyboard()
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.new_meme_menu, menu)
         createMeme = menu?.findItem(R.id.createNewMeme) ?: return false
         createMeme.isEnabled = viewModel.canCreate.value ?: false
-        createMeme.setOnMenuItemClickListener {
-            viewModel.createMeme()
-            showMemeCreated()
-            clearInput()
-            hideKeyboard()
-            false
-        }
+
         return true
     }
 

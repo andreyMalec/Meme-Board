@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
@@ -18,20 +17,15 @@ import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
 import com.proj.memeboard.di.Injectable
 import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.ui.main.navigation.DetailNavigator
 import com.proj.memeboard.util.MemeSharer
 import kotlinx.android.synthetic.main.fragment_meme.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class MemeFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var navHolder: NavigatorHolder
 
     private val viewModel: MemeViewModel by viewModels {
         viewModelFactory
@@ -155,13 +149,6 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
     }
 
     override fun onMemeDetailClick(meme: Meme, vararg transitionOptions: Pair<View, String>) {
-        activity?.let {
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(it, *transitionOptions)
-            val navigator = DetailNavigator(it, options.toBundle())
-
-            navHolder.setNavigator(navigator)
-        }
-
-        viewModel.onDetailClick(meme)
+        viewModel.onDetailClick(meme, transitionOptions[0])
     }
 }

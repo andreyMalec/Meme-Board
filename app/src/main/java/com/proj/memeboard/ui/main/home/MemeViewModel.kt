@@ -4,7 +4,7 @@ import androidx.lifecycle.*
 import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.repo.MemeRepo
 import com.proj.memeboard.service.network.Result
-import com.proj.memeboard.ui.Screens
+import com.proj.memeboard.ui.main.BaseMemeViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -14,15 +14,11 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class MemeViewModel @Inject constructor(
     private val memeRepo: MemeRepo,
-    private val router: Router
-) : ViewModel() {
+    router: Router
+) : BaseMemeViewModel(memeRepo, router) {
 
     val memes: LiveData<List<Meme>>
     val searchQuery = MutableLiveData<String>(null)
-
-    private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
 
     private val _isLoadError = MutableLiveData(false)
     val isLoadError: LiveData<Boolean>
@@ -42,16 +38,6 @@ class MemeViewModel @Inject constructor(
     fun refreshMemes() {
         searchQuery.value = null
         loadMemes()
-    }
-
-    fun toggleFavorite(meme: Meme) {
-        viewModelScope.launch {
-            memeRepo.toggleFavorite(meme)
-        }
-    }
-
-    fun onDetailClick(meme: Meme) {
-        router.navigateTo(Screens.DetailScreen(meme))
     }
 
     private fun loadMemes() {

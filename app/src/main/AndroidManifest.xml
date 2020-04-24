@@ -15,10 +15,12 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.proj.memeboard.ui.main.detail.MemeDetailActivity"
-            android:theme="@style/AppTheme.Detail" />
+            android:theme="@style/AppTheme.Closeable" />
         <activity android:name=".ui.main.MainActivity" />
         <activity android:name=".ui.login.LoginActivity" />
-        <activity android:name=".ui.main.newMeme.NewMemeActivity" />
+        <activity
+            android:name=".ui.main.newMeme.NewMemeActivity"
+            android:theme="@style/AppTheme.Closeable" />
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/AppTheme.Launcher">

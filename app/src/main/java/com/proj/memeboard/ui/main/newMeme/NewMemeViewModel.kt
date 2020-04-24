@@ -34,7 +34,8 @@ class NewMemeViewModel @Inject constructor(
         get() = _canCreate
 
     fun checkCanCreate() {
-        _canCreate.value = !title.value.isNullOrBlank() && image.value != null
+        _canCreate.value = !title.value.isNullOrBlank() && image.value != null &&
+                title.value.orEmpty().length <= 140 && description.value.orEmpty().length <= 1000
     }
 
     fun createMeme() {

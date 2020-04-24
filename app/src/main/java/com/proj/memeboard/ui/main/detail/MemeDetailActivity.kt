@@ -1,8 +1,6 @@
 package com.proj.memeboard.ui.main.detail
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
@@ -16,7 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.proj.memeboard.R
 import com.proj.memeboard.databinding.ActivityMemeDetailBinding
-import com.proj.memeboard.domain.Meme
+import com.proj.memeboard.ui.Screens
 import com.proj.memeboard.util.MemeSharer
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -39,20 +37,6 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
     private lateinit var binding: ActivityMemeDetailBinding
     private lateinit var deleteButton: MenuItem
 
-    companion object {
-        fun getExtraIntent(context: Context, meme: Meme): Intent {
-            return Intent(context, MemeDetailActivity::class.java).apply {
-                putExtra("id", meme.id)
-                putExtra("title", meme.title)
-                putExtra("description", meme.description)
-                putExtra("isFavorite", meme.isFavorite)
-                putExtra("createdDate", meme.createdDate)
-                putExtra("photoUrl", meme.photoUrl)
-                putExtra("author", meme.author)
-            }
-        }
-    }
-
     override fun activityInjector() = dispatchingAndroidInjector
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -66,16 +50,13 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            android.R.id.home -> {
-                binding.card.radius = 21f
-                supportFinishAfterTransition()
-            }
+            android.R.id.home -> onBackPressed()
             R.id.shareButton -> viewModel.currentMeme.value?.let {
                 MemeSharer(this).send(it)
             }
             R.id.deleteButton -> {
                 viewModel.deleteMeme()
-                supportFinishAfterTransition()
+                onBackPressed()
             }
         }
 
@@ -83,24 +64,24 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
     }
 
     override fun onBackPressed() {
-        binding.card.radius = 21f
+        binding.card.radius = resources.getDimension(R.dimen.dp8)
         super.onBackPressed()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.currentMeme.value = getExtraMeme()
+        viewModel.currentMeme.value = Screens.DetailScreen.parseExtraIntent(intent)
         binding = setContentView(this, R.layout.activity_meme_detail)
         binding.meme = viewModel.currentMeme.value
 
-        initTransitionListener()
+        straightenCorners()
         initViewModelListener()
         initToolBar()
         initFavoriteListener()
     }
 
-    private fun initTransitionListener() {
+    private fun straightenCorners() {
         Handler().postDelayed({
             binding.card.radius = 0f
         }, 250)
@@ -133,18 +114,5 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
 
             viewModel.toggleFavorite()
         }
-    }
-
-    private fun getExtraMeme(): Meme {
-        val intent = intent
-        return Meme(
-            intent.getLongExtra("id", 0),
-            intent.getStringExtra("title"),
-            intent.getStringExtra("description"),
-            intent.getBooleanExtra("isFavorite", false),
-            intent.getLongExtra("createdDate", 0),
-            intent.getStringExtra("photoUrl"),
-            intent.getLongExtra("author", 0)
-        )
     }
 }

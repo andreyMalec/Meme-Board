@@ -1,11 +1,17 @@
 package com.proj.memeboard.ui.main.navigation
 
+import android.content.Intent
+import android.os.Bundle
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.proj.memeboard.ui.Screens
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import ru.terrakok.cicerone.android.support.SupportAppScreen
+import ru.terrakok.cicerone.commands.Command
+import ru.terrakok.cicerone.commands.Forward
 import ru.terrakok.cicerone.commands.Replace
 
 @ExperimentalCoroutinesApi
@@ -30,6 +36,14 @@ class BottomNavigator(
             show(screen)
             commit()
         }
+    }
+
+    override fun createStartActivityOptions(command: Command, activityIntent: Intent): Bundle? {
+        return if (command is Forward && command.screen is Screens.DetailScreen) {
+            val detailScreen = command.screen as Screens.DetailScreen
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, detailScreen.getOptions())
+            options.toBundle()
+        } else super.createStartActivityOptions(command, activityIntent)
     }
 
     private fun FragmentTransaction.show(screen: SupportAppScreen) {

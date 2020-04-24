@@ -45,7 +45,7 @@
         <item name="android:textColorSecondary">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.Detail" parent="AppTheme">
+    <style name="AppTheme.Closeable" parent="AppTheme">
         <item name="android:homeAsUpIndicator">@drawable/close</item>
     </style>
 

@@ -1,11 +1,15 @@
 package com.proj.memeboard.ui.main.user
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.repo.MemeRepo
 import com.proj.memeboard.repo.UserRepo
 import com.proj.memeboard.service.network.Result
 import com.proj.memeboard.ui.Screens
+import com.proj.memeboard.ui.main.BaseMemeViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import ru.terrakok.cicerone.Router
@@ -16,7 +20,7 @@ class UserViewModel @Inject constructor(
     private val memeRepo: MemeRepo,
     private val userRepo: UserRepo,
     private val router: Router
-) : ViewModel() {
+) : BaseMemeViewModel(memeRepo, router) {
 
     val memes: LiveData<List<Meme>>
 
@@ -27,10 +31,6 @@ class UserViewModel @Inject constructor(
     private val _userDesc = MutableLiveData<String>()
     val userDesc: LiveData<String>
         get() = _userDesc
-
-    private val _isLoading = MutableLiveData(true)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
 
     init {
         val user = userRepo.getUser()
@@ -49,16 +49,6 @@ class UserViewModel @Inject constructor(
             if (result is Result.Success)
                 router.newRootScreen(Screens.LoginScreen)
             _isLoading.value = false
-        }
-    }
-
-    fun onDetailClick(meme: Meme) {
-        router.navigateTo(Screens.DetailScreen(meme))
-    }
-
-    fun toggleFavorite(meme: Meme) {
-        viewModelScope.launch {
-            memeRepo.toggleFavorite(meme)
         }
     }
 }

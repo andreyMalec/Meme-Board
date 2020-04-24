@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
@@ -21,7 +20,6 @@ import com.proj.memeboard.R
 import com.proj.memeboard.di.Injectable
 import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.ui.main.home.MemeAdapter
-import com.proj.memeboard.ui.main.navigation.DetailNavigator
 import com.proj.memeboard.util.MemeSharer
 import kotlinx.android.synthetic.main.fragment_user.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -150,13 +148,6 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
     }
 
     override fun onMemeDetailClick(meme: Meme, vararg transitionOptions: Pair<View, String>) {
-        activity?.let {
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(it, *transitionOptions)
-            val navigator = DetailNavigator(it, options.toBundle())
-
-            navHolder.setNavigator(navigator)
-        }
-
-        viewModel.onDetailClick(meme)
+        viewModel.onDetailClick(meme, transitionOptions[0])
     }
 }

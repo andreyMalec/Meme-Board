@@ -2,6 +2,8 @@ package com.proj.memeboard.ui
 
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import com.proj.memeboard.domain.Meme
 import com.proj.memeboard.ui.login.LoginActivity
@@ -45,9 +47,39 @@ object Screens {
         }
     }
 
-    class DetailScreen(private val meme: Meme) : SupportAppScreen() {
+    class DetailScreen(
+        private val meme: Meme,
+        private val cardTransitionOptions: Pair<View, String>
+    ) : SupportAppScreen() {
         override fun getActivityIntent(context: Context): Intent? {
-            return MemeDetailActivity.getExtraIntent(context, meme)
+            return createExtraIntent(context, meme)
+        }
+
+        fun getOptions() = cardTransitionOptions
+
+        companion object {
+            fun createExtraIntent(context: Context, meme: Meme): Intent {
+                return Intent(context, MemeDetailActivity::class.java).apply {
+                    putExtra("id", meme.id)
+                    putExtra("title", meme.title)
+                    putExtra("description", meme.description)
+                    putExtra("isFavorite", meme.isFavorite)
+                    putExtra("createdDate", meme.createdDate)
+                    putExtra("photoUrl", meme.photoUrl)
+                    putExtra("author", meme.author)
+                }
+            }
+
+            fun parseExtraIntent(intent: Intent): Meme =
+                Meme(
+                    intent.getLongExtra("id", 0),
+                    intent.getStringExtra("title"),
+                    intent.getStringExtra("description"),
+                    intent.getBooleanExtra("isFavorite", false),
+                    intent.getLongExtra("createdDate", 0),
+                    intent.getStringExtra("photoUrl"),
+                    intent.getLongExtra("author", 0)
+                )
         }
     }
 }
