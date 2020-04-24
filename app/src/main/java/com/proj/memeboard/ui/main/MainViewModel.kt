@@ -17,7 +17,7 @@ class MainViewModel @Inject constructor(private val router: Router) : ViewModel(
     }
 
     fun onNewClick() {
-        router.replaceScreen(Screens.NewMemeScreen)
+        router.navigateTo(Screens.NewMemeScreen)
     }
 
     fun onProfileClick() {

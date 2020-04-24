@@ -8,7 +8,7 @@ import com.proj.memeboard.ui.login.LoginActivity
 import com.proj.memeboard.ui.main.MainActivity
 import com.proj.memeboard.ui.main.detail.MemeDetailActivity
 import com.proj.memeboard.ui.main.home.MemeFragment
-import com.proj.memeboard.ui.main.newMeme.NewMemeFragment
+import com.proj.memeboard.ui.main.newMeme.NewMemeActivity
 import com.proj.memeboard.ui.main.user.UserFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.terrakok.cicerone.android.support.SupportAppScreen
@@ -28,47 +28,20 @@ object Screens {
     }
 
     object HomeScreen : SupportAppScreen() {
-        private var fragment: Fragment? = null
-
         override fun getFragment(): Fragment? {
-            if (fragment == null)
-                fragment = MemeFragment()
-
-            return fragment
-        }
-
-        fun clearFragment() {
-            fragment = null
+            return MemeFragment()
         }
     }
 
     object NewMemeScreen : SupportAppScreen() {
-        private var fragment: Fragment? = null
-
-        override fun getFragment(): Fragment? {
-            if (fragment == null)
-                fragment = NewMemeFragment()
-
-            return fragment
-        }
-
-        fun clearFragment() {
-            fragment = null
+        override fun getActivityIntent(context: Context): Intent? {
+            return Intent(context, NewMemeActivity::class.java)
         }
     }
 
     object ProfileScreen : SupportAppScreen() {
-        private var fragment: Fragment? = null
-
         override fun getFragment(): Fragment? {
-            if (fragment == null)
-                fragment = UserFragment()
-
-            return fragment
-        }
-
-        fun clearFragment() {
-            fragment = null
+            return UserFragment()
         }
     }
 

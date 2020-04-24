@@ -37,6 +37,8 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
         viewModelFactory
     }
 
+    private val navigator = SupportAppNavigator(this, -1)
+
     override fun activityInjector() = dispatchingAndroidInjector
 
     override fun onPause() {
@@ -46,7 +48,7 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
 
     override fun onResume() {
         super.onResume()
-        navHolder.setNavigator(SupportAppNavigator(this, -1))
+        navHolder.setNavigator(navigator)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -69,6 +69,10 @@ class NewMemeViewModel @Inject constructor(
         image.value = fixBitmap
     }
 
+    fun clearImage() {
+        image.value = null
+    }
+
     companion object {
         const val GALLERY = 10
         const val CAMERA = 11

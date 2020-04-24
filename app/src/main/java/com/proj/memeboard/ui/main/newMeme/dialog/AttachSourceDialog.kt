@@ -9,7 +9,7 @@ import android.widget.ListView
 import androidx.fragment.app.DialogFragment
 import com.proj.memeboard.R
 
-class AttachSourceDialog : DialogFragment() {
+class AttachSourceDialog(private val target: ListDialogListener) : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_dialog_attach, container, false)
 
@@ -19,7 +19,7 @@ class AttachSourceDialog : DialogFragment() {
                 0 -> DialogResult.GALLERY
                 else -> DialogResult.CAMERA
             }
-            (targetFragment as ListDialogListener).onDialogFinish(result)
+            target.onDialogFinish(result)
 
             dialog?.dismiss()
         }

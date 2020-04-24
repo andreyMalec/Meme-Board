@@ -65,9 +65,9 @@ class MemeAdapter internal constructor(private val vm: MemeAction) :
 
             binding?.root?.setOnClickListener {
                 binding.meme?.let {
-                    val p1 = Pair(binding.card as View, "card")
+                    val cardTransitionOptions = Pair(binding.card as View, "card")
 
-                    vm.onMemeDetailClick(it, p1)
+                    vm.onMemeDetailClick(it, cardTransitionOptions)
                 }
             }
         }

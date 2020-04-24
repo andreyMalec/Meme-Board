@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.proj.memeboard.R
-import com.proj.memeboard.ui.Screens
 import com.proj.memeboard.ui.main.navigation.BottomNavigator
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -32,6 +31,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     val viewModel: MainViewModel by viewModels {
         viewModelFactory
     }
+
+    private var pressAgain = true
+    private val pressAgainAwait = 2000L
 
     override fun supportFragmentInjector() = dispatchingAndroidInjector
 
@@ -67,7 +69,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                     viewModel.onHomeClick(); true
                 }
                 R.id.navigation_new_meme -> {
-                    viewModel.onNewClick(); true
+                    viewModel.onNewClick(); false
                 }
                 R.id.navigation_user -> {
                     viewModel.onProfileClick(); true
@@ -75,14 +77,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 else -> false
             }
         }
-    }
-
-    override fun onDestroy() {
-        Screens.HomeScreen.clearFragment()
-        Screens.NewMemeScreen.clearFragment()
-        Screens.ProfileScreen.clearFragment()
-
-        super.onDestroy()
     }
 
     override fun onPause() {
@@ -95,8 +89,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         navHolder.setNavigator(navigator)
     }
 
-    private var pressAgain = true
-    private val pressAgainAwait = 2000L
     override fun onBackPressed() {
         if (pressAgain) {
             pressAgain = false
