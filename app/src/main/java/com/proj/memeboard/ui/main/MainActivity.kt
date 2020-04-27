@@ -1,12 +1,12 @@
 package com.proj.memeboard.ui.main
 
 import android.os.Bundle
-import android.os.Handler
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.proj.memeboard.R
 import com.proj.memeboard.ui.main.navigation.BottomNavigator
@@ -32,9 +32,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         viewModelFactory
     }
 
-    private var pressAgain = true
-    private val pressAgainAwait = 2000L
-
     override fun supportFragmentInjector() = dispatchingAndroidInjector
 
     private val navigator = BottomNavigator(
@@ -48,8 +45,16 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         setContentView(R.layout.activity_main)
 
         initToolBar()
+        initViewModelListeners()
         initBottomNavigation()
         viewModel.init()
+    }
+
+    private fun initViewModelListeners() {
+        viewModel.showPressAgain.observe(this, Observer { show ->
+            if (show)
+                Toast.makeText(this, getString(R.string.pressAgainExit), Toast.LENGTH_SHORT).show()
+        })
     }
 
     private fun initToolBar() {
@@ -90,13 +95,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     override fun onBackPressed() {
-        if (pressAgain) {
-            pressAgain = false
-            Toast.makeText(this, getString(R.string.pressAgainExit), Toast.LENGTH_SHORT).show()
-            Handler().postDelayed({ pressAgain = true }, pressAgainAwait)
-            return
-        }
-
-        super.onBackPressed()
+        viewModel.onBackPressed()
     }
 }

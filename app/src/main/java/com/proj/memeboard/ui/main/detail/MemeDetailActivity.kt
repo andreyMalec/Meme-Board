@@ -64,7 +64,7 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
     }
 
     override fun onBackPressed() {
-        binding.card.radius = resources.getDimension(R.dimen.dp8)
+        binding.card.radius = resources.getDimension(R.dimen.meme_card_radius)
         super.onBackPressed()
     }
 

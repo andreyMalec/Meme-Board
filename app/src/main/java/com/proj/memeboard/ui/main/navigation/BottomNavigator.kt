@@ -22,13 +22,13 @@ class BottomNavigator(
 ) : SupportAppNavigator(activity, fragmentManager, containerId) {
 
     private val screens = mutableListOf<String>()
-    private lateinit var currentScreen: String
+    private var currentScreen: String = ""
 
     override fun fragmentReplace(command: Replace) {
         val screen = command.screen as SupportAppScreen
         val screenKey = screen.screenKey
 
-        if (::currentScreen.isInitialized && screenKey == currentScreen) return
+        if (currentScreen.isNotEmpty() && screenKey == currentScreen) return
         else currentScreen = screenKey
 
         fragmentManager.beginTransaction().apply {
