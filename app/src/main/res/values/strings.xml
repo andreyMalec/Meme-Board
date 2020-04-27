@@ -12,9 +12,10 @@
     <string name="title_home">Home</string>
     <string name="title_new_meme">New meme</string>
     <string name="title_user">Profile</string>
+    <string name="pressAgainExit">Press again to exit</string>
 
     <string name="memes_load_error_text">The feed failed to load.\nRefresh the screen or try again later</string>
-    <string name="memes_load_error">At query time the error occurred</string>
+    <string name="memes_load_error">At query time the error occurred\nTry again later</string>
     <string name="share_meme">Send to</string>
     <string name="date_today">Today</string>
     <string name="date_yesterday">Yesterday</string>

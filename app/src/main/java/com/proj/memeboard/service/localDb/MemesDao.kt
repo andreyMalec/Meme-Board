@@ -16,8 +16,8 @@ interface MemesDao {
     @Query("SELECT * FROM Meme WHERE title LIKE :searchQuery")
     fun getTitleContains(searchQuery: String): Flow<List<Meme>>
 
-    @Query("SELECT * FROM Meme WHERE author LIKE :author")
-    fun getCreatedBy(author: String): Flow<List<Meme>>
+    @Query("SELECT * FROM Meme WHERE author = :authorId")
+    fun getCreatedBy(authorId: Long): Flow<List<Meme>>
 
     @Insert(onConflict = IGNORE)
     fun insert(meme: Meme)

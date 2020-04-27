@@ -63,13 +63,11 @@ class MemeAdapter internal constructor(private val vm: MemeAction) :
                 }
             }
 
-            binding?.image?.setOnClickListener {
+            binding?.root?.setOnClickListener {
                 binding.meme?.let {
-                    val p1 = Pair(binding.image as View, "image")
-                    val p2 = Pair(binding.title as View, "title")
-                    val p3 = Pair(binding.favoriteLayout as View, "favorite")
+                    val cardTransitionOptions = Pair(binding.card as View, "card")
 
-                    vm.onMemeDetailClick(it, p1, p2, p3)
+                    vm.onMemeDetailClick(it, cardTransitionOptions)
                 }
             }
         }

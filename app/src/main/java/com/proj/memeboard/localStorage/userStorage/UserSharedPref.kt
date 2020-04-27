@@ -6,18 +6,9 @@ import com.proj.memeboard.localStorage.clear
 import com.proj.memeboard.localStorage.get
 import com.proj.memeboard.localStorage.set
 
-class UserSharedPrefStorage(context: Context) : UserStorage {
+class UserSharedPref(context: Context) : UserStorage {
     private val localStorage =
         context.getSharedPreferences(UserPreferences.USER_PREFERENCES.key, Context.MODE_PRIVATE)
-
-    override fun setUser(user: User) {
-        setToken(user.token)
-        setId(user.id)
-        setUserName(user.userName)
-        setFirstName(user.firstName)
-        setLastName(user.lastName)
-        setUserDescription(user.userDescription)
-    }
 
     override fun getUser(): User = User(
         getToken(),

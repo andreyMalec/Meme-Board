@@ -1,59 +1,75 @@
 package com.proj.memeboard.ui.login
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.proj.memeboard.domain.User
-import com.proj.memeboard.localStorage.userStorage.UserStorage
+import com.proj.memeboard.repo.UserRepo
 import com.proj.memeboard.service.network.Result
-import com.proj.memeboard.service.network.repo.authRepo.AuthRepo
-import com.proj.memeboard.service.network.request.LoginRequest
+import com.proj.memeboard.ui.Screens
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(
-    private val userStorage: UserStorage,
-    private val authRepo: AuthRepo
-) : ViewModel() {
+@ExperimentalCoroutinesApi
+class LoginViewModel @Inject constructor(private val userRepo: UserRepo, private val router: Router) : ViewModel() {
 
     private val passwordSize = 8
 
-    val isUserAuthorized = MutableLiveData(checkUserAuthorized())
-    val isLoading = MutableLiveData(false)
-    val isLoadError = MutableLiveData(false)
-    val isLoginInputError = MutableLiveData(false)
-    val passInputError = MutableLiveData(-1)
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
 
-    fun authorizeUser(request: LoginRequest) {
-        checkInput(request)
+    private val _isLoadError = MutableLiveData(false)
+    val isLoadError: LiveData<Boolean>
+        get() = _isLoadError
+
+    private val _isLoginInputError = MutableLiveData(false)
+    val isLoginInputError: LiveData<Boolean>
+        get() = _isLoginInputError
+
+    private val _passInputError = MutableLiveData(-1)
+    val passInputError: LiveData<Int>
+        get() = _passInputError
+
+    init {
+        if (userRepo.isUserAuthorized())
+            startMainScreen()
+    }
+
+    private fun startMainScreen() {
+        router.newRootScreen(Screens.MainScreen)
+    }
+
+    fun authorizeUser(login: String, pass: String) {
+        checkInput(login, pass)
 
         if (hasInputErrors()) return
 
-        isLoading.value = true
+        _isLoading.value = true
         viewModelScope.launch {
-            val userResult = authRepo.login(request)
-            isLoadError.value =
-                if (userResult is Result.Success) {
-                    saveUserData(userResult.value)
-                    isUserAuthorized.value = true
-                    false
-                } else true
+            val userResult = userRepo.login(login, pass)
+            _isLoadError.value = userResult !is Result.Success
 
-            isLoading.value = false
+            if (userRepo.isUserAuthorized())
+                startMainScreen()
+
+            _isLoading.value = false
         }
     }
 
-    private fun checkInput(request: LoginRequest) {
-        checkLoginInput(request.login)
-        checkPassInput(request.password)
+    private fun checkInput(login: String, pass: String) {
+        checkLoginInput(login)
+        checkPassInput(pass)
     }
 
     fun checkLoginInput(input: String?) {
-        isLoginInputError.value = input.isNullOrBlank()
+        _isLoginInputError.value = input.isNullOrBlank()
     }
 
     fun checkPassInput(input: String?) {
-        passInputError.value = validatePass(input)
+        _passInputError.value = validatePass(input)
     }
 
     private fun validatePass(pass: String?): Int {
@@ -64,12 +80,6 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun hasInputErrors(): Boolean {
-        return isLoginInputError.value == true || passInputError.value != -1
-    }
-
-    private fun checkUserAuthorized(): Boolean = userStorage.isUserAuthorized()
-
-    private fun saveUserData(user: User) {
-        userStorage.setUser(user)
+        return _isLoginInputError.value == true || _passInputError.value != -1
     }
 }

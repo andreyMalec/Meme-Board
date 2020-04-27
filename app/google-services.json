@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "827760615018",
+    "firebase_url": "https://meme-board-44dc5.firebaseio.com",
+    "project_id": "meme-board-44dc5",
+    "storage_bucket": "meme-board-44dc5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827760615018:android:64f474a87ae7c479433413",
+        "android_client_info": {
+          "package_name": "com.proj.memeboard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "827760615018-ah28rqlcc2g2qi54tt525kn9utjp4vue.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVbaXwwpZJlfH7lKKzLHLaSZAU21fw7Ss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "827760615018-ah28rqlcc2g2qi54tt525kn9utjp4vue.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

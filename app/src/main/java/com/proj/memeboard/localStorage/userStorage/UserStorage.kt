@@ -3,7 +3,6 @@ package com.proj.memeboard.localStorage.userStorage
 import com.proj.memeboard.domain.User
 
 interface UserStorage {
-    fun setUser(user: User)
     fun getUser(): User
 
     fun isUserAuthorized(): Boolean

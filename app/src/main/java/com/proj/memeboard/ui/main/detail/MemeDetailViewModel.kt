@@ -4,44 +4,39 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.proj.memeboard.domain.Meme
-import com.proj.memeboard.localStorage.userStorage.UserStorage
-import com.proj.memeboard.service.localDb.repo.DbRepo
+import com.proj.memeboard.repo.MemeRepo
+import com.proj.memeboard.repo.UserRepo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class MemeDetailViewModel @Inject constructor(
-    private val dbRepo: DbRepo,
-    userStorage: UserStorage
+    private val memeRepo: MemeRepo,
+    private val userRepo: UserRepo
 ) : ViewModel() {
-
-    private val thisAuthor: String
-
     val isDeleteVisible = MutableLiveData(false)
+    val currentMeme = MutableLiveData<Meme>()
 
-    init {
-        val user = userStorage.getUser()
-        thisAuthor = "${user.userName}_${user.firstName}_${user.lastName}"
+    fun toggleFavorite() {
+        viewModelScope.launch {
+            currentMeme.value?.let {
+                memeRepo.toggleFavorite(it)
+            }
+        }
     }
 
-    fun toggleFavorite(meme: Meme) {
-        val updatedMeme = Meme(
-            meme.id,
-            meme.title,
-            meme.description,
-            !meme.isFavorite,
-            meme.createdDate,
-            meme.photoUrl,
-            meme.author
-        )
-        dbRepo.toggleFavorite(viewModelScope, updatedMeme)
+    fun setDeleteVisibility() {
+        currentMeme.value?.let {
+            isDeleteVisible.value = it.author == userRepo.getUser().id
+        }
     }
 
-    fun setDeleteVisibility(meme: Meme) {
-        isDeleteVisible.value = meme.author == thisAuthor
-    }
-
-    fun deleteMeme(meme: Meme) {
-        dbRepo.deleteMeme(viewModelScope, meme)
+    fun deleteMeme() {
+        viewModelScope.launch {
+            currentMeme.value?.let {
+                memeRepo.deleteMeme(it)
+            }
+        }
     }
 }

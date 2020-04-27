@@ -11,4 +11,6 @@
     <color name="colorShadow">#80000000</color>
     <color name="colorLight">#aa31304c</color>
     <color name="colorDisabled">#80ffffff</color>
+
+    <color name="colorWhite">#FFF</color>
 </resources>

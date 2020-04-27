@@ -1,9 +1,9 @@
 package com.proj.memeboard.di.module
 
 import com.proj.memeboard.localStorage.userStorage.UserStorage
+import com.proj.memeboard.service.network.interceptor.AuthInterceptor
 import dagger.Module
 import dagger.Provides
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
@@ -11,7 +11,7 @@ import javax.inject.Singleton
 class OkHttpClientModule {
     @Provides
     @Singleton
-    fun okHttpClient(interceptor: Interceptor): OkHttpClient {
+    fun okHttpClient(interceptor: AuthInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(interceptor)
             .build()
@@ -19,14 +19,6 @@ class OkHttpClientModule {
 
     @Provides
     @Singleton
-    fun interceptor(userStorage: UserStorage): Interceptor {
-        return Interceptor { chain ->
-            val original = chain.request()
-            val request = original.newBuilder().apply {
-                header("Authorization", userStorage.getToken())
-                method(original.method, original.body)
-            }.build()
-            chain.proceed(request)
-        }
-    }
+    fun authorizationInterceptor(userStorage: UserStorage) =
+        AuthInterceptor(userStorage)
 }

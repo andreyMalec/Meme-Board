@@ -1,7 +1,6 @@
 package com.proj.memeboard.ui.login
 
 import android.app.Activity
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
@@ -15,13 +14,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
-import com.proj.memeboard.service.network.request.LoginRequest
-import com.proj.memeboard.ui.main.MainActivity
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import ru.terrakok.cicerone.NavigatorHolder
+import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class LoginActivity : AppCompatActivity(), HasActivityInjector {
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
@@ -29,11 +30,26 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var navHolder: NavigatorHolder
+
     val viewModel: LoginViewModel by viewModels {
         viewModelFactory
     }
 
+    private val navigator = SupportAppNavigator(this, -1)
+
     override fun activityInjector() = dispatchingAndroidInjector
+
+    override fun onPause() {
+        super.onPause()
+        navHolder.removeNavigator()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        navHolder.setNavigator(navigator)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +66,6 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
     }
 
     private fun initViewModelListeners() {
-        viewModel.isUserAuthorized.observe(this, Observer { authorized ->
-            if (authorized)
-                startMemeActivity()
-        })
-
         viewModel.isLoading.observe(this, Observer { loading ->
             if (loading) showProgress()
             else hideProgress()
@@ -83,14 +94,10 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
         })
     }
 
-    private fun startMemeActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
-    }
-
     private fun showLoginError() {
         Snackbar.make(root, getString(R.string.login_fail), Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.colorError))
+            .setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
             .show()
     }
 
@@ -125,7 +132,7 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
         val login = loginEditText.text.toString()
         val pass = passEditText.text.toString()
 
-        viewModel.authorizeUser(LoginRequest(login, pass))
+        viewModel.authorizeUser(login, pass)
     }
 
     private fun setProgressBarColor() {

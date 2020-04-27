@@ -10,6 +10,30 @@
         <item name="android:homeAsUpIndicator">@drawable/back</item>
         <item name="android:actionMenuTextColor">@color/action_text_color</item>
         <item name="colorBackgroundFloating">@color/colorLightBackground</item>
+        <item name="snackbarStyle">@style/Widget.Design.Snackbar</item>
+        <item name="searchViewStyle">@style/AppTheme.SearchView</item>
+    </style>
+
+    <style name="AppTheme.CardView" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MaterialCardView.Cut
+        </item>
+    </style>
+
+    <style name="AppTheme.SearchView" parent="Widget.AppCompat.SearchView">
+        <item name="searchHintIcon">@null</item>
+        <item name="closeIcon">@drawable/close</item>
+        <item name="android:maxWidth">99999dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.MaterialCardView.Cut" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">8dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
     <style name="AppTheme.PopupMenu" parent="ThemeOverlay.AppCompat.Dark">
@@ -21,7 +45,7 @@
         <item name="android:textColorSecondary">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.Detail" parent="AppTheme">
+    <style name="AppTheme.Closeable" parent="AppTheme">
         <item name="android:homeAsUpIndicator">@drawable/close</item>
     </style>
 
