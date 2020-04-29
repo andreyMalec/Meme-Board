@@ -1,6 +1,5 @@
 package com.proj.memeboard.ui.main.detail
 
-import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
@@ -16,16 +15,17 @@ import com.proj.memeboard.R
 import com.proj.memeboard.databinding.ActivityMemeDetailBinding
 import com.proj.memeboard.ui.Screens
 import com.proj.memeboard.util.MemeSharer
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_meme_detail.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
+class MemeDetailActivity : AppCompatActivity(), HasAndroidInjector {
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -37,7 +37,7 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
     private lateinit var binding: ActivityMemeDetailBinding
     private lateinit var deleteButton: MenuItem
 
-    override fun activityInjector() = dispatchingAndroidInjector
+    override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.meme_detail_menu, menu)
@@ -48,8 +48,8 @@ class MemeDetailActivity : AppCompatActivity(), HasActivityInjector {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> onBackPressed()
             R.id.shareButton -> viewModel.currentMeme.value?.let {
                 MemeSharer(this).send(it)

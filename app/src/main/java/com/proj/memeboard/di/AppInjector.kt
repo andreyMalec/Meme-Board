@@ -9,9 +9,8 @@ import androidx.fragment.app.FragmentManager
 import com.proj.memeboard.app.App
 import com.proj.memeboard.di.module.ContextModule
 import dagger.android.AndroidInjection
-import dagger.android.HasActivityInjector
+import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -36,7 +35,7 @@ object AppInjector {
     }
 
     private fun handleActivity(activity: Activity) {
-        if (activity is HasSupportFragmentInjector || activity is HasActivityInjector)
+        if (activity is HasAndroidInjector)
             AndroidInjection.inject(activity)
 
         if (activity is FragmentActivity) {

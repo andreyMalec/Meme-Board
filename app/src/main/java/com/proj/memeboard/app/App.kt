@@ -1,19 +1,19 @@
 package com.proj.memeboard.app
 
-import android.app.Activity
 import android.app.Application
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import com.proj.memeboard.di.AppInjector
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.HasAndroidInjector
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class App : Application(), HasActivityInjector {
+class App : Application(), HasAndroidInjector {
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     override fun onCreate() {
         AppInjector.init(this)
@@ -24,12 +24,12 @@ class App : Application(), HasActivityInjector {
                     return@OnCompleteListener
                 }
 
-                val token = task.result?.token
+                //val token = task.result?.token
             })
 
 
         super.onCreate()
     }
 
-    override fun activityInjector() = dispatchingAndroidInjector
+    override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 }

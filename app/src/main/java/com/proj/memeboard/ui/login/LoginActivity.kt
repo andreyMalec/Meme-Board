@@ -1,7 +1,9 @@
 package com.proj.memeboard.ui.login
 
-import android.app.Activity
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.Editable
@@ -14,8 +16,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.R
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.terrakok.cicerone.NavigatorHolder
@@ -23,9 +26,9 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class LoginActivity : AppCompatActivity(), HasActivityInjector {
+class LoginActivity : AppCompatActivity(), HasAndroidInjector {
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -39,7 +42,7 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
 
     private val navigator = SupportAppNavigator(this, -1)
 
-    override fun activityInjector() = dispatchingAndroidInjector
+    override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 
     override fun onPause() {
         super.onPause()
@@ -136,10 +139,13 @@ class LoginActivity : AppCompatActivity(), HasActivityInjector {
     }
 
     private fun setProgressBarColor() {
-        progressBar.indeterminateDrawable.setColorFilter(
-            ContextCompat.getColor(this, R.color.colorPrimary),
-            PorterDuff.Mode.SRC_IN
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            progressBar.indeterminateDrawable.colorFilter = BlendModeColorFilter(R.color.colorPrimary, BlendMode.SRC_IN)
+        else
+            progressBar.indeterminateDrawable.setColorFilter(
+                ContextCompat.getColor(this, R.color.colorPrimary),
+                PorterDuff.Mode.SRC_IN
+            )
     }
 
     private fun hideProgress() {

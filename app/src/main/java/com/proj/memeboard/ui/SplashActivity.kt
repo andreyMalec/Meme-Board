@@ -6,7 +6,9 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.proj.memeboard.R
 import com.proj.memeboard.ui.login.LoginActivity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class SplashActivity : AppCompatActivity() {
     private val splashScreenDuration = 300L
 

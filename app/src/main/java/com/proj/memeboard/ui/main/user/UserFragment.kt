@@ -1,7 +1,10 @@
 package com.proj.memeboard.ui.main.user
 
 import android.content.DialogInterface
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
@@ -121,13 +124,20 @@ class UserFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
             )
         )
         toolbarLayout.isTitleEnabled = false
-        toolbar.overflowIcon?.setColorFilter(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.colorAccent
-            ),
-            PorterDuff.Mode.SRC_ATOP
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            toolbar.overflowIcon?.colorFilter = BlendModeColorFilter(
+                R.color.colorAccent,
+                BlendMode.SRC_ATOP
+            )
+        } else {
+            toolbar.overflowIcon?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorAccent
+                ),
+                PorterDuff.Mode.SRC_ATOP
+            )
+        }
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.title = null
         setHasOptionsMenu(true)

@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
+import android.os.Build
 import android.provider.MediaStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -56,11 +58,16 @@ class NewMemeViewModel @Inject constructor(
 
     fun getImageFromResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val fixBitmap: Bitmap? = when {
-            resultCode == Activity.RESULT_OK && data != null && requestCode == GALLERY -> {
-                MediaStore.Images.Media.getBitmap(context.contentResolver, data.data)
+            resultCode == Activity.RESULT_OK && data != null && data.data != null && requestCode == GALLERY -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    val source = ImageDecoder.createSource(context.contentResolver, data.data!!)
+                    ImageDecoder.decodeBitmap(source)
+                } else {
+                    MediaStore.Images.Media.getBitmap(context.contentResolver, data.data)
+                }
             }
             resultCode == Activity.RESULT_OK && requestCode == CAMERA -> {
-                val newFile = File(context.getExternalFilesDir(null), TEMP_MEME_PATH)
+                val newFile = File(context.cacheDir, TEMP_MEME_PATH)
 
                 BitmapFactory.decodeFile(newFile.path)
             }

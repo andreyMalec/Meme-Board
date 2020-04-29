@@ -49,7 +49,7 @@ class MemeFragment : Fragment(), MemeAdapter.MemeAction, Injectable {
 
     private fun initSearchView() {
         searchView.findViewById<View>(androidx.appcompat.R.id.search_plate)
-            .setBackgroundResource(Color.TRANSPARENT)
+            .setBackgroundResource(android.R.color.transparent)
         searchView.queryHint = getString(R.string.search_hint)
 
         initSearchViewListener()

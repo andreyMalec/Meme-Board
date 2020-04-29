@@ -1,10 +1,10 @@
 package com.proj.memeboard.ui.main.newMeme
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
@@ -19,7 +19,6 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.proj.memeboard.BuildConfig
 import com.proj.memeboard.R
@@ -28,17 +27,18 @@ import com.proj.memeboard.ui.main.newMeme.NewMemeViewModel.Companion.GALLERY
 import com.proj.memeboard.ui.main.newMeme.NewMemeViewModel.Companion.TEMP_MEME_PATH
 import com.proj.memeboard.ui.main.newMeme.dialog.AttachSourceDialog
 import com.proj.memeboard.ui.main.newMeme.dialog.AttachSourceDialog.DialogResult
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_new_meme.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class NewMemeActivity : AppCompatActivity(), AttachSourceDialog.ListDialogListener, HasActivityInjector {
+class NewMemeActivity : AppCompatActivity(), AttachSourceDialog.ListDialogListener, HasAndroidInjector {
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -49,7 +49,7 @@ class NewMemeActivity : AppCompatActivity(), AttachSourceDialog.ListDialogListen
 
     private lateinit var createMeme: MenuItem
 
-    override fun activityInjector() = dispatchingAndroidInjector
+    override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,10 +80,10 @@ class NewMemeActivity : AppCompatActivity(), AttachSourceDialog.ListDialogListen
     private fun initViewModelListeners() {
         viewModel.image.observe(this, Observer { image ->
             if (image != null) {
-                Glide.with(this).load(image).into(imageView)
+                imageView.setImageBitmap(image)
                 clearImageButton.visibility = View.VISIBLE
             } else {
-                Glide.with(this).clear(imageView)
+                imageView.setImageResource(0)
                 clearImageButton.visibility = View.GONE
             }
             viewModel.checkCanCreate()
@@ -129,7 +129,7 @@ class NewMemeActivity : AppCompatActivity(), AttachSourceDialog.ListDialogListen
     }
 
     private fun startCameraActivity() {
-        val newMemeFile = File(getExternalFilesDir(null), TEMP_MEME_PATH)
+        val newMemeFile = File(cacheDir, TEMP_MEME_PATH)
         val extraFile = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, newMemeFile)
 
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -159,13 +159,16 @@ class NewMemeActivity : AppCompatActivity(), AttachSourceDialog.ListDialogListen
                 )
                     startCameraActivity()
                 else
-                    requestPermissions(arrayOf(Manifest.permission.CAMERA), CAMERA)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                        requestPermissions(arrayOf(Manifest.permission.CAMERA), CAMERA)
+                    else
+                        startCameraActivity()
             }
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> onBackPressed()
             R.id.createNewMeme -> {
                 viewModel.createMeme()
